@@ -19,3 +19,4 @@ backend/.mvn
 /frontend/dist
 /frontend/dist-ssr
 /frontend/*.local
+/backend/src/main/resources/application-prod.properties
