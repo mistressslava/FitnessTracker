@@ -88,4 +88,21 @@ class ExerciseServiceTest {
         assertEquals("Exercise name is required! Please enter a name.", exception.getMessage());
 
     }
+
+    @Test
+    void addNewExercise_shouldThrowException_whenSetIs0() {
+        //GIVEN
+        ExerciseDto exerciseDto = new ExerciseDto("test", 0, 0);
+
+        //THEN
+        assertThrows(IllegalArgumentException.class, () -> {
+            throw new IllegalArgumentException("Sets must be > 0");
+        });
+
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> exerciseService.addNewExercise(exerciseDto));
+
+        assertEquals("Sets must be > 0", exception.getMessage());
+
+    }
 }

@@ -4,15 +4,17 @@ import org.example.backend.model.Exercise;
 import org.example.backend.repo.ExerciseRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,8 +40,8 @@ class ExerciseControllerTest {
         //WHEN
         mockMvc.perform(get("/api/exercises"))
                 //THEN
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("""
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
                         [
                           {
                             "id": "1",
@@ -58,14 +60,38 @@ class ExerciseControllerTest {
         //WHEN
         mockMvc.perform(get("/api/exercises"))
                 //THEN
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("""
-                        [
-                        ]
-                        """));
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        """
+                                [
+                                ]
+                                """));
     }
 
     @Test
-    void addNewExercise() {
+    void addNewExercise_shouldReturnAddedExercise() throws Exception {
+        //WHEN
+        mockMvc.perform(post("/api/exercises")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                    {
+                                      "name": "Exercise1",
+                                      "sets": 3,
+                                      "reps": 12
+                                    }
+                                """
+                        ))
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        """
+                                    {
+                                      "name": "Exercise1",
+                                      "sets": 3,
+                                      "reps": 12
+                                    }
+                                
+                                """
+                ));
     }
 }

@@ -27,6 +27,8 @@ public class ExerciseService {
         if (exercise.name() == null || exercise.name().isBlank()) {
             throw new EmptyExerciseFieldException("Exercise name is required! Please enter a name.");
         }
+        if (exercise.sets() <= 0) throw new IllegalArgumentException("Sets must be > 0");
+        if (exercise.reps() <= 0) throw new IllegalArgumentException("Reps must be > 0");
         Exercise newExercise = new Exercise(idService.randomId(), exercise.name(), exercise.sets(), exercise.reps());
         return exerciseRepo.save(newExercise);
     }
