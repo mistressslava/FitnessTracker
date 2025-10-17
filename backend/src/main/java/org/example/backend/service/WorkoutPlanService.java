@@ -6,19 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
-    {
-      "type": "UPPER_BODY",
-      "targetMuscles": ["CHEST", "BACK", "ARMS"],
-      "exercises": [
-        { "name": "Bench Press", "sets": 3, "reps": 10 },
-        { "name": "Pull-ups", "sets": 3, "reps": 8 }
-      ]
-    }
-
-*/
-
-
 @Service
 public class WorkoutPlanService {
 
