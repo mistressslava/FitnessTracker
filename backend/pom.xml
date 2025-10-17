@@ -29,7 +29,7 @@
     <properties>
         <java.version>25</java.version>
         <sonar.organization>mistressslava-1</sonar.organization>
-        <sonar.projectName>FitnessTracker</sonar.projectName>
+        <sonar.projectName>FitnessTracker-backend</sonar.projectName>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
