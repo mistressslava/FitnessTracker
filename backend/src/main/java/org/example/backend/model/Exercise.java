@@ -7,9 +7,7 @@ import org.example.backend.exception.EmptyExerciseFieldException;
 // order could be useful in future
 public record Exercise(String id, String name, int sets, int reps) {
 
-    public Exercise {
+    /*public Exercise {
         if (name == null || name.isBlank()) throw new EmptyExerciseFieldException("Exercise name is required! Please enter a name.");
-        /*if (sets <= 0) throw new EmptyExerciseFieldException("sets must be > 0");
-        if (reps <= 0) throw new EmptyExerciseFieldException("reps must be > 0");*/
-    }
+    }*/
 }
