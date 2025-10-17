@@ -90,7 +90,7 @@ class ExerciseServiceTest {
     }
 
     @Test
-    void addNewExercise_shouldThrowException_whenSetIs0() {
+    void addNewExercise_shouldThrowException_whenSetsAreNull() {
         //GIVEN
         ExerciseDto exerciseDto = new ExerciseDto("test", 0, 0);
 
@@ -104,5 +104,37 @@ class ExerciseServiceTest {
 
         assertEquals("Sets must be > 0", exception.getMessage());
 
+    }
+
+    @Test
+    void addNewExercise_shouldThrowException_whenRepsAreNull() {
+        //GIVEN
+        ExerciseDto exerciseDto = new ExerciseDto("test", 5, 0);
+
+        //THEN
+        assertThrows(IllegalArgumentException.class, () -> {
+            throw new IllegalArgumentException("Reps must be > 0");
+        });
+
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> exerciseService.addNewExercise(exerciseDto));
+
+        assertEquals("Reps must be > 0", exception.getMessage());
+    }
+
+    @Test
+    void addNewExercise_shouldThrowException_whenNameIsNull() {
+        //GIVEN
+        ExerciseDto exerciseDto = new ExerciseDto(null, 5, 5);
+
+        //THEN
+        assertThrows(EmptyExerciseFieldException.class, () -> {
+            throw new EmptyExerciseFieldException("Exercise name is required! Please enter a name.");
+        });
+
+        Throwable exception = assertThrows(EmptyExerciseFieldException.class,
+                () -> exerciseService.addNewExercise(exerciseDto));
+
+        assertEquals("Exercise name is required! Please enter a name.", exception.getMessage());
     }
 }
