@@ -1,8 +1,5 @@
 package org.example.backend.model;
 
-import org.example.backend.exception.EmptyExerciseFieldException;
-import org.example.backend.exception.IllegalArgumentWorkoutPlanFieldException;
-
 import java.util.List;
 
 public record WorkoutPlan(String id, String title, List<WorkoutDay> days) {

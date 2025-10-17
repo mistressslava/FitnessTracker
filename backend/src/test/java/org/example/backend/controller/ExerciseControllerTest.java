@@ -64,4 +64,8 @@ class ExerciseControllerTest {
                         ]
                         """));
     }
+
+    @Test
+    void addNewExercise() {
+    }
 }
