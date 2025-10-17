@@ -1,5 +1,8 @@
 package org.example.backend.model;
 
+import lombok.Getter;
+
+@Getter
 public enum MuscleGroup {
     CHEST(WorkoutDayType.UPPER_BODY),
     BACK(WorkoutDayType.UPPER_BODY),
@@ -20,7 +23,4 @@ public enum MuscleGroup {
         this.category = category;
     }
 
-    public WorkoutDayType getCategory() {
-        return category;
-    }
 }
