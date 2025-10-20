@@ -78,7 +78,7 @@ class ExerciseControllerTest {
                                         """
                         ))
                 //THEN
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().json(
                         """
                                     {
