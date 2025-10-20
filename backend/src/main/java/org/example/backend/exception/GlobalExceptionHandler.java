@@ -14,4 +14,16 @@ public class GlobalExceptionHandler extends RuntimeException{
     public String handlerNoSuchElementException(NoSuchElementException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(EmptyExerciseFieldException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleEmptyExercise(EmptyExerciseFieldException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleIllegalArgumentException(IllegalArgumentException e) {
+        return e.getMessage();
+    }
 }

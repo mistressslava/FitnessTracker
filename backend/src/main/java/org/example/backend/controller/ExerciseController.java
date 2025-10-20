@@ -6,6 +6,7 @@ import org.example.backend.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,13 +29,16 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public Exercise addNewExercise(@RequestBody ExerciseDto exercise) {
-        return exerciseService.addNewExercise(exercise);
+    public ResponseEntity<Exercise> addNewExercise(@RequestBody ExerciseDto exercise) {
+        Exercise newExercise = exerciseService.addNewExercise(exercise);
+        return ResponseEntity.created(URI.create("/api/exercises/" + newExercise.id()))
+                .body(newExercise);
     }
 
     @PutMapping("/{id}")
-    public Exercise updateExerciseById(@PathVariable String id, @RequestBody ExerciseDto exercise) {
-        return exerciseService.updateExerciseById(id, exercise);
+    public ResponseEntity<Exercise> updateExerciseById(@PathVariable String id, @RequestBody ExerciseDto exercise) {
+        Exercise updatedExercise = exerciseService.updateExerciseById(id, exercise);
+        return ResponseEntity.ok(updatedExercise);
     }
 
     @DeleteMapping("/{id}")
