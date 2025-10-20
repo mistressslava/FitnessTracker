@@ -26,4 +26,14 @@ public class ExerciseController {
     public Exercise addNewExercise(@RequestBody ExerciseDto exercise) {
         return exerciseService.addNewExercise(exercise);
     }
+
+    @PutMapping("/{id}")
+    public Exercise updateExerciseById(@PathVariable String id, @RequestBody ExerciseDto exercise) {
+        return exerciseService.updateExerciseById(id, exercise);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteExercise(@PathVariable String id) {
+        exerciseService.deleteExercise(id);
+    }
 }
