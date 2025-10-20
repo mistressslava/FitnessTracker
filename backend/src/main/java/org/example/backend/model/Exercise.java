@@ -1,7 +1,5 @@
 package org.example.backend.model;
 
-import org.example.backend.exception.EmptyExerciseFieldException;
-
 // generated ID,
 // User can add the name
 // order could be useful in future
