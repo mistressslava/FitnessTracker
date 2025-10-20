@@ -1,15 +1,13 @@
 package org.example.backend.service;
 
 import org.example.backend.dto.ExerciseDto;
-import org.example.backend.exception.EmptyExerciseFieldException;
 import org.example.backend.model.Exercise;
 import org.example.backend.repo.ExerciseRepo;
 import org.example.backend.validator.ExerciseValidator;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ExerciseService {
@@ -41,7 +39,7 @@ public class ExerciseService {
 
     public Exercise updateExerciseById(String id, ExerciseDto exercise) {
         Exercise existing = exerciseRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, buildExerciseNotFoundMessage(id)));
+                .orElseThrow(() -> new NoSuchElementException(buildExerciseNotFoundMessage(id)));
 
         validator.validate(exercise);
 
@@ -51,7 +49,7 @@ public class ExerciseService {
 
     public void deleteExercise(String id) {
         Exercise existing = exerciseRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, buildExerciseNotFoundMessage(id)));
+                .orElseThrow(() -> new NoSuchElementException(buildExerciseNotFoundMessage(id)));
         exerciseRepo.deleteById(existing.id());
     }
 }

@@ -6,9 +6,9 @@ import org.example.backend.repo.ExerciseRepo;
 import org.example.backend.validator.ExerciseValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,7 +104,7 @@ class ExerciseServiceTest {
         ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5);
         when(exerciseRepo.findById("5")).thenReturn(Optional.empty());
         //WHEN //THEN
-        assertThrows(ResponseStatusException.class,
+        assertThrows(NoSuchElementException.class,
                 () -> exerciseService.updateExerciseById("5", updated));
 
         verify(exerciseRepo).findById("5");
@@ -131,7 +131,7 @@ class ExerciseServiceTest {
         when(exerciseRepo.findById("2")).thenReturn(Optional.empty());
 
         //WHEN //THEN
-        assertThrows(ResponseStatusException.class,
+        assertThrows(NoSuchElementException.class,
                 () -> exerciseService.deleteExercise("2"));
 
         verify(exerciseRepo).findById("2");

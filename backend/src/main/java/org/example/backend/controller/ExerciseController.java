@@ -3,6 +3,7 @@ package org.example.backend.controller;
 import org.example.backend.dto.ExerciseDto;
 import org.example.backend.model.Exercise;
 import org.example.backend.service.ExerciseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,12 @@ public class ExerciseController {
     }
 
     @GetMapping
-    public List<Exercise> getAllExercises() {
-        return exerciseService.getAllExercises();
+    public ResponseEntity<List<Exercise>> getAllExercises() {
+        List<Exercise> exerciseList = exerciseService.getAllExercises();
+        if (exerciseList.isEmpty()) {
+            return ResponseEntity.noContent().build(); //204
+        }
+        return ResponseEntity.ok(exerciseList);
     }
 
     @PostMapping
@@ -33,7 +38,8 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteExercise(@PathVariable String id) {
+    public ResponseEntity<Void> deleteExercise(@PathVariable String id) {
         exerciseService.deleteExercise(id);
+        return ResponseEntity.noContent().build(); //204
     }
 }

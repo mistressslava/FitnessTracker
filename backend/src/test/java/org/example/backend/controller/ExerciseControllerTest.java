@@ -11,8 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,12 +59,8 @@ class ExerciseControllerTest {
         //WHEN
         mockMvc.perform(get("/api/exercises"))
                 //THEN
-                .andExpect(status().isOk())
-                .andExpect(content().json(
-                        """
-                                [
-                                ]
-                                """));
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
     }
 
     @Test
@@ -75,13 +70,14 @@ class ExerciseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 """
-                                    {
-                                      "name": "Exercise1",
-                                      "sets": 3,
-                                      "reps": 12
-                                    }
-                                """
+                                            {
+                                              "name": "Exercise1",
+                                              "sets": 3,
+                                              "reps": 12
+                                            }
+                                        """
                         ))
+                //THEN
                 .andExpect(status().isOk())
                 .andExpect(content().json(
                         """
@@ -96,10 +92,72 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void updateExerciseById() {
+    @DirtiesContext
+    void updateExerciseById_shouldUpdateExercise() throws Exception {
+        //GIVEN
+        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10);
+        exerciseRepo.save(exercise);
+
+        //WHEN
+        mockMvc.perform(put("/api/exercises/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                           {
+                            "name": "Updated Exercise 1",
+                            "sets": 5,
+                            "reps": 10
+                           }
+                        """)
+        )
+                //THEN
+                .andExpect(content().json("""
+                           {
+                              "id": "1",
+                              "name": "Updated Exercise 1",
+                              "sets": 5,
+                              "reps": 10
+                           }
+                          """))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void deleteExercise() {
+    @DirtiesContext
+    void updateExerciseById_shouldThrowException_whenIdNotFound() throws Exception {
+        //WHEN
+        mockMvc.perform(put("/api/exercises/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                         {
+                            "name": "Updated Exercise 1",
+                            "sets": 5,
+                            "reps": 10
+                         }
+                         """))
+                //THEN
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Exercise with id 1 not found"));
+    }
+
+    @Test
+    @DirtiesContext
+    void deleteExercise_shouldDeleteExerciseById_status204() throws Exception {
+        //GIVEN
+        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10);
+        exerciseRepo.save(exercise);
+
+        //WHEN
+        mockMvc.perform(delete("/api/exercises/1"))
+                //THEN
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DirtiesContext
+    void deleteExercise_whenIdNotFound_shouldThrowException() throws Exception {
+        //WHEN
+        mockMvc.perform(delete("/api/exercises/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Exercise with id 1 not found"));
     }
 }
