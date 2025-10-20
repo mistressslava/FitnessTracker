@@ -1,13 +1,15 @@
 package org.example.backend.service;
 
 import org.example.backend.dto.ExerciseDto;
-import org.example.backend.exception.EmptyExerciseFieldException;
 import org.example.backend.model.Exercise;
 import org.example.backend.repo.ExerciseRepo;
+import org.example.backend.validator.ExerciseValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,7 +24,8 @@ class ExerciseServiceTest {
     void setup() {
         exerciseRepo = mock(ExerciseRepo.class);
         idService = mock(IdService.class);
-        exerciseService = new ExerciseService(idService, exerciseRepo);
+        ExerciseValidator validator = mock(ExerciseValidator.class);
+        exerciseService = new ExerciseService(idService, exerciseRepo, validator);
     }
 
     @Test
@@ -73,68 +76,66 @@ class ExerciseServiceTest {
     }
 
     @Test
-    void addNewExercise_shouldThrowException_whenEmptyStringWasAdded() {
+    void updateExerciseById_shouldReturnUpdatedExercise_whenCalled() {
         //GIVEN
-        ExerciseDto exerciseDto = new ExerciseDto("", 0, 0);
+        Exercise existing = new Exercise("5", "test", 3, 5);
+        ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5);
+
+        when(exerciseRepo.findById("5")).thenReturn(Optional.of(existing));
+        when(exerciseRepo.save(any(Exercise.class))).thenAnswer(i -> i.getArgument(0));
+
+        //WHEN
+        Exercise updatedExercise = exerciseService.updateExerciseById(existing.id(), updated);
 
         //THEN
-        assertThrows(EmptyExerciseFieldException.class, () -> {
-            throw new EmptyExerciseFieldException("Exercise name is required! Please enter a name.");
-        });
+        assertEquals("5", updatedExercise.id());
+        assertEquals("Updated Name", updatedExercise.name());
+        assertEquals(3, updatedExercise.sets());
+        assertEquals(5, updatedExercise.reps());
 
-        Throwable exception = assertThrows(EmptyExerciseFieldException.class,
-                () -> exerciseService.addNewExercise(exerciseDto));
-
-        assertEquals("Exercise name is required! Please enter a name.", exception.getMessage());
-
+        verify(exerciseRepo).findById("5");
+        verify(exerciseRepo).save(updatedExercise);
+        verifyNoMoreInteractions(exerciseRepo);
     }
 
     @Test
-    void addNewExercise_shouldThrowException_whenSetsAreNull() {
+    void updateExerciseById_shouldThrowException_whenIdNotFound() {
         //GIVEN
-        ExerciseDto exerciseDto = new ExerciseDto("test", 0, 0);
+        ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5);
+        when(exerciseRepo.findById("5")).thenReturn(Optional.empty());
+        //WHEN //THEN
+        assertThrows(ResponseStatusException.class,
+                () -> exerciseService.updateExerciseById("5", updated));
 
-        //THEN
-        assertThrows(IllegalArgumentException.class, () -> {
-            throw new IllegalArgumentException("Sets must be > 0");
-        });
-
-        Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> exerciseService.addNewExercise(exerciseDto));
-
-        assertEquals("Sets must be > 0", exception.getMessage());
-
+        verify(exerciseRepo).findById("5");
+        verifyNoMoreInteractions(exerciseRepo);
     }
 
     @Test
-    void addNewExercise_shouldThrowException_whenRepsAreNull() {
+    void deleteExercise_shouldDeleteExerciseById_whenIdFound() {
         //GIVEN
-        ExerciseDto exerciseDto = new ExerciseDto("test", 5, 0);
+        Exercise exercise = new Exercise("1", "TestName", 3, 8);
+
+        when(exerciseRepo.findById("1")).thenReturn(Optional.of(exercise));
+
+        //WHEN
+        exerciseService.deleteExercise("1");
 
         //THEN
-        assertThrows(IllegalArgumentException.class, () -> {
-            throw new IllegalArgumentException("Reps must be > 0");
-        });
-
-        Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> exerciseService.addNewExercise(exerciseDto));
-
-        assertEquals("Reps must be > 0", exception.getMessage());
+        verify(exerciseRepo).deleteById("1");
     }
 
     @Test
-    void addNewExercise_shouldThrowException_whenNameIsNull() {
+    void deleteExercise_shouldThrowException_whenIdNotFound() {
         //GIVEN
-        ExerciseDto exerciseDto = new ExerciseDto(null, 5, 5);
+        when(exerciseRepo.findById("2")).thenReturn(Optional.empty());
 
-        //THEN
-        assertThrows(EmptyExerciseFieldException.class, () -> {
-            throw new EmptyExerciseFieldException("Exercise name is required! Please enter a name.");
-        });
+        //WHEN //THEN
+        assertThrows(ResponseStatusException.class,
+                () -> exerciseService.deleteExercise("2"));
 
-        Throwable exception = assertThrows(EmptyExerciseFieldException.class,
-                () -> exerciseService.addNewExercise(exerciseDto));
+        verify(exerciseRepo).findById("2");
 
-        assertEquals("Exercise name is required! Please enter a name.", exception.getMessage());
+        verifyNoMoreInteractions(exerciseRepo);
     }
 }

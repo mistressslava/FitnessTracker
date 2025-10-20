@@ -94,4 +94,12 @@ class ExerciseControllerTest {
                                 """
                 ));
     }
+
+    @Test
+    void updateExerciseById() {
+    }
+
+    @Test
+    void deleteExercise() {
+    }
 }
