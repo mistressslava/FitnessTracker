@@ -1,10 +1,9 @@
 package org.example.backend.controller;
 
+import org.example.backend.dto.ExerciseDto;
 import org.example.backend.model.Exercise;
 import org.example.backend.service.ExerciseService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +20,10 @@ public class ExerciseController {
     @GetMapping
     public List<Exercise> getAllExercises() {
         return exerciseService.getAllExercises();
+    }
+
+    @PostMapping
+    public Exercise addNewExercise(@RequestBody ExerciseDto exercise) {
+        return exerciseService.addNewExercise(exercise);
     }
 }
