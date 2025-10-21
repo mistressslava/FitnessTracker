@@ -13,25 +13,33 @@ class ExerciseValidatorTest {
     @Test
     void shouldThrow_whenNameIsNull() {
         ExerciseDto dto = new ExerciseDto(null, 3, 5);
-        assertThrows(EmptyExerciseFieldException.class, () -> validator.validate(dto));
+        Throwable exception = assertThrows(EmptyExerciseFieldException.class,
+                () -> validator.validate(dto));
+        assertEquals("Exercise name is required! Please enter a name.", exception.getMessage());
     }
 
     @Test
     void shouldThrow_whenNameIsBlank() {
         ExerciseDto dto = new ExerciseDto("   ", 3, 5);
-        assertThrows(EmptyExerciseFieldException.class, () -> validator.validate(dto));
+        Throwable exception = assertThrows(EmptyExerciseFieldException.class,
+                () -> validator.validate(dto));
+        assertEquals("Exercise name is required! Please enter a name.", exception.getMessage());
     }
 
     @Test
     void shouldThrow_whenSetsLessThanOrEqualZero() {
         ExerciseDto dto = new ExerciseDto("Push Up", 0, 10);
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(dto));
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> validator.validate(dto));
+        assertEquals("Sets must be > 0", exception.getMessage());
     }
 
     @Test
     void shouldThrow_whenRepsLessThanOrEqualZero() {
         ExerciseDto dto = new ExerciseDto("Push Up", 3, 0);
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(dto));
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> validator.validate(dto));
+        assertEquals("Reps must be > 0", exception.getMessage());
     }
 
     @Test
