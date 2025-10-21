@@ -93,6 +93,48 @@ class ExerciseControllerTest {
 
     @Test
     @DirtiesContext
+    void addNewExercise_shouldReturn400_whenEmptyExerciseField() throws Exception {
+        //WHEN
+        mockMvc.perform(post("/api/exercises")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                            {
+                                              "name": "",
+                                              "sets": 3,
+                                              "reps": 12
+                                            }
+                                        """
+                        ))
+                //THEN
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Exercise name is required! Please enter a name.")
+                );
+    }
+
+    @Test
+    @DirtiesContext
+    void addNewExercise_shouldReturn400_whenIllegalArgument() throws Exception {
+        //WHEN
+        mockMvc.perform(post("/api/exercises")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                            {
+                                              "name": "Exercise1",
+                                              "sets": -1,
+                                              "reps": 12
+                                            }
+                                        """
+                        ))
+                //THEN
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Sets must be > 0")
+                );
+    }
+
+    @Test
+    @DirtiesContext
     void updateExerciseById_shouldUpdateExercise() throws Exception {
         //GIVEN
         Exercise exercise = new Exercise("1", "Exercise 1", 3, 10);
