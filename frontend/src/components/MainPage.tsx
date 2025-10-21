@@ -1,8 +1,6 @@
-
-
 export default function MainPage() {
 
     return (
-        <h1>Main Page</h1>
+        <div className="text-3xl font-bold underline">Main Page</div>
     )
 }

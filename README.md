@@ -51,4 +51,4 @@ docker-compose up --build
 ---
 ## 👩‍💻 Author
 
-Developed by mistresslava
+Developed by mistressslava
