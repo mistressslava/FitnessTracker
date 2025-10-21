@@ -6,7 +6,7 @@ type DeleteExerciseProps = {
     onDelete: (id: string) => void;
 }
 
-export default function DeleteExercise(props: DeleteExerciseProps) {
+export default function DeleteExercise(props: Readonly<DeleteExerciseProps>) {
 
     const [error, setError] = useState<string>("");
 
