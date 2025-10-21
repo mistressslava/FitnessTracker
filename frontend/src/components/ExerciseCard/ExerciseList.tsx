@@ -15,6 +15,11 @@ export default function ExerciseList() {
         setIsAdding(false);
     }
 
+    function handleDelete() {
+        getAllExercises();
+        setIsAdding(false);
+    }
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Failed to load exercises.</p>;
 
@@ -32,7 +37,7 @@ export default function ExerciseList() {
             {isAdding && <CreateExercise onAdd={handleAdd} />}
 
             <div className="exercise-column mt-6 grid gap-4">
-                {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex}/>)}
+                {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}/>)}
             </div>
         </div>
     )
