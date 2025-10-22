@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/workout-day")
+@RequestMapping("/api/workout-days")
 public class WorkoutDayController {
 
     private final WorkoutDayService workoutDayService;
