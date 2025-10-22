@@ -1,6 +1,7 @@
 package org.example.backend.controller;
 
 import org.example.backend.model.Exercise;
+import org.example.backend.model.MuscleGroup;
 import org.example.backend.repo.ExerciseRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class ExerciseControllerTest {
     @DirtiesContext
     void getAllExercises_shouldReturnListOfExercises() throws Exception {
         //GIVEN
-        Exercise exercise1 = new Exercise("1", "Exercise1", 3, 12);
+        Exercise exercise1 = new Exercise("1", "Exercise1", 3, 12, MuscleGroup.ARMS);
         exerciseRepo.save(exercise1);
         //WHEN
         mockMvc.perform(get("/api/exercises"))
@@ -137,7 +138,7 @@ class ExerciseControllerTest {
     @DirtiesContext
     void updateExerciseById_shouldUpdateExercise() throws Exception {
         //GIVEN
-        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10);
+        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10, MuscleGroup.ARMS);
         exerciseRepo.save(exercise);
 
         //WHEN
@@ -185,7 +186,7 @@ class ExerciseControllerTest {
     @DirtiesContext
     void deleteExercise_shouldDeleteExerciseById_status204() throws Exception {
         //GIVEN
-        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10);
+        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10, MuscleGroup.ARMS);
         exerciseRepo.save(exercise);
 
         //WHEN

@@ -2,6 +2,7 @@ package org.example.backend.service;
 
 import org.example.backend.dto.ExerciseDto;
 import org.example.backend.model.Exercise;
+import org.example.backend.model.MuscleGroup;
 import org.example.backend.repo.ExerciseRepo;
 import org.example.backend.validator.ExerciseValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +32,8 @@ class ExerciseServiceTest {
     @Test
     void getAllExercises_shouldReturnListOfExercises_whenCalled() {
         //GIVEN
-        Exercise exercise1 = new Exercise("1", "exercise1", 4, 12);
-        Exercise exercise2 = new Exercise("2", "exercise2", 4, 8);
+        Exercise exercise1 = new Exercise("1", "exercise1", 4, 12, MuscleGroup.ARMS);
+        Exercise exercise2 = new Exercise("2", "exercise2", 4, 8, MuscleGroup.ARMS);
         List<Exercise> expected = List.of(exercise1, exercise2);
 
         //WHEN
@@ -61,8 +62,8 @@ class ExerciseServiceTest {
     @Test
     void addNewExercise_shouldReturnAddedExercise_whenExerciseAdded() {
         //GIVEN
-        Exercise exercise = new Exercise("Test-id", "exerciseName", 3, 12);
-        ExerciseDto exerciseDto = new ExerciseDto("exerciseName", 3, 12);
+        Exercise exercise = new Exercise("Test-id", "exerciseName", 3, 12, MuscleGroup.ARMS);
+        ExerciseDto exerciseDto = new ExerciseDto("exerciseName", 3, 12, MuscleGroup.ARMS);
 
         //WHEN
         when(idService.randomId()).thenReturn("Test-id");
@@ -78,8 +79,8 @@ class ExerciseServiceTest {
     @Test
     void updateExerciseById_shouldReturnUpdatedExercise_whenCalled() {
         //GIVEN
-        Exercise existing = new Exercise("5", "test", 3, 5);
-        ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5);
+        Exercise existing = new Exercise("5", "test", 3, 5, MuscleGroup.ARMS);
+        ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5, MuscleGroup.ARMS);
 
         when(exerciseRepo.findById("5")).thenReturn(Optional.of(existing));
         when(exerciseRepo.save(any(Exercise.class))).thenAnswer(i -> i.getArgument(0));
@@ -101,7 +102,7 @@ class ExerciseServiceTest {
     @Test
     void updateExerciseById_shouldThrowException_whenIdNotFound() {
         //GIVEN
-        ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5);
+        ExerciseDto updated = new ExerciseDto("Updated Name", 3, 5, MuscleGroup.ARMS);
         when(exerciseRepo.findById("5")).thenReturn(Optional.empty());
         //WHEN //THEN
         assertThrows(NoSuchElementException.class,
@@ -114,7 +115,7 @@ class ExerciseServiceTest {
     @Test
     void deleteExercise_shouldDeleteExerciseById_whenIdFound() {
         //GIVEN
-        Exercise exercise = new Exercise("1", "TestName", 3, 8);
+        Exercise exercise = new Exercise("1", "TestName", 3, 8, MuscleGroup.ARMS);
 
         when(exerciseRepo.findById("1")).thenReturn(Optional.of(exercise));
 
