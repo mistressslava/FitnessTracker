@@ -1,5 +1,9 @@
 package org.example.backend.controller;
 
+import org.example.backend.model.Exercise;
+import org.example.backend.model.MuscleGroup;
+import org.example.backend.model.WorkoutDay;
+import org.example.backend.model.WorkoutDayType;
 import org.example.backend.repo.WorkoutDayRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
+
+import java.time.DayOfWeek;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -86,5 +94,33 @@ class WorkoutDayControllerTest {
                                 }
                                 """
                 ));
+    }
+
+    @Test
+    @DirtiesContext
+    void deleteWorkout_shouldDeleteExerciseById_status204() throws Exception {
+        //GIVEN
+        Exercise exercise = new Exercise("1", "exercise1", 4, 12, MuscleGroup.ARMS);
+        WorkoutDay expected = new WorkoutDay(
+                "1",
+                DayOfWeek.FRIDAY,
+                WorkoutDayType.FULL_BODY,
+                Set.of(MuscleGroup.BACK),
+                List.of(exercise));
+        workoutDayRepo.save(expected);
+
+        //WHEN
+        mockMvc.perform(delete("/api/workout-days/1"))
+                //THEN
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DirtiesContext
+    void deleteWorkout_whenIdNotFound_shouldThrowException() throws Exception {
+        //WHEN
+        mockMvc.perform(delete("/api/exercises/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Exercise with id 1 not found"));
     }
 }

@@ -11,9 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class WorkoutDayServiceTest {
@@ -83,5 +86,39 @@ class WorkoutDayServiceTest {
         verify(workoutDayRepo).save(expected);
         verify(idService).randomId();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void deleteExercise_shouldDeleteExerciseById_whenIdFound() {
+        //GIVEN
+        Exercise exercise = new Exercise("1", "exercise1", 4, 12, MuscleGroup.ARMS);
+        WorkoutDay expected = new WorkoutDay(
+                "1",
+                DayOfWeek.FRIDAY,
+                WorkoutDayType.FULL_BODY,
+                Set.of(MuscleGroup.BACK),
+                List.of(exercise));
+
+        when(workoutDayRepo.findById("1")).thenReturn(Optional.of(expected));
+
+        //WHEN
+        workoutDayService.deleteWorkoutDay("1");
+
+        //THEN
+        verify(workoutDayRepo).deleteById("1");
+    }
+
+    @Test
+    void deleteExercise_shouldThrowException_whenIdNotFound() {
+        //GIVEN
+        when(workoutDayRepo.findById("2")).thenReturn(Optional.empty());
+
+        //WHEN //THEN
+        assertThrows(NoSuchElementException.class,
+                () -> workoutDayService.deleteWorkoutDay("2"));
+
+        verify(workoutDayRepo).findById("2");
+
+        verifyNoMoreInteractions(workoutDayRepo);
     }
 }
