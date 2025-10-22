@@ -10,7 +10,6 @@ export default function Navbar() {
                 <Link className="nav-button" to={"/home"}>Home</Link>
                 <Link className="nav-button" to={"/exercises"}>Exercises</Link>
                 <Link className="nav-button" to={"/workouts"}>Workouts</Link>
-
             </nav>
         </header>
     )

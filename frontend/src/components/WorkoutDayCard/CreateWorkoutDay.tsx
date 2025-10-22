@@ -135,7 +135,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                 </label>
 
                 <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium">Target muscles (опційно)</span>
+                    <span className="text-sm font-medium">Target muscles (optional)</span>
                     <input
                         className="rounded-lg border px-3 py-2"
                         placeholder="CHEST, BACK … or nothing"

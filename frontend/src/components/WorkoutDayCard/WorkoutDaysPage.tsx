@@ -67,8 +67,8 @@ export default function WorkoutDaysPage() {
                         </div>
                         {d.exercises?.length > 0 && (
                             <div className="text-sm mt-1">
-                                {d.exercises.map((ex, i) => (
-                                    <div key={i}>{ex.name}: {ex.sets}×{ex.reps}</div>
+                                {d.exercises.map((ex) => (
+                                    <div key={ex.id}>{ex.name}: {ex.sets}×{ex.reps}</div>
                                 ))}
                             </div>
                         )}
