@@ -1,12 +1,11 @@
-import type {Exercise} from "./Exercise.ts";
 import type {DayOfWeek} from "./DayOfWeek.ts";
 import type {WorkoutDayType} from "./WorkoutDayType.ts";
 import type {MuscleGroup} from "./MuscleGroup.ts";
+import type {ExerciseDto} from "./ExerciseDto.ts";
 
-export type WorkoutDay = {
-    id: string,
+export type WorkoutDayDto = {
     day: DayOfWeek,
     type: WorkoutDayType,
     targetMuscles: MuscleGroup[],
-    exercises: Exercise[];
+    exercises: ExerciseDto[];
 }

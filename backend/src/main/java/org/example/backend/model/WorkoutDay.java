@@ -4,7 +4,8 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;
 
-public record WorkoutDay(String id, DayOfWeek day, WorkoutDayType type, Set<MuscleGroup> targetMuscles, List<Exercise> exercises) {
+public record WorkoutDay(String id, DayOfWeek day, WorkoutDayType type, Set<MuscleGroup> targetMuscles,
+                         List<Exercise> exercises) {
 
    /* public WorkoutDay {
         targetMuscles= targetMuscles == null ? Set.of() : Set.copyOf(targetMuscles);

@@ -33,7 +33,7 @@ public class ExerciseService {
     public Exercise addNewExercise(ExerciseDto exercise) {
         validator.validate(exercise);
 
-        Exercise newExercise = new Exercise(idService.randomId(), exercise.name(), exercise.sets(), exercise.reps());
+        Exercise newExercise = new Exercise(idService.randomId(), exercise.name(), exercise.sets(), exercise.reps(), exercise.muscleGroup());
         return exerciseRepo.save(newExercise);
     }
 
@@ -43,7 +43,7 @@ public class ExerciseService {
 
         validator.validate(exercise);
 
-        Exercise updated = new Exercise(existing.id(), exercise.name(), exercise.sets(), exercise.reps());
+        Exercise updated = new Exercise(existing.id(), exercise.name(), exercise.sets(), exercise.reps(), exercise.muscleGroup());
         return exerciseRepo.save(updated);
     }
 

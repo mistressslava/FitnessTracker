@@ -32,8 +32,8 @@ public final class TestFixtures {
                 : EnumSet.copyOf(Arrays.asList(groups));
 
         List<Exercise> exercises = (type == WorkoutDayType.REST)
-                ? List.of(new Exercise("rest-" + i, "Rest", 0, 0))
-                : List.of(new Exercise("ex-" + i, "Exercise-" + i, 3, 10));
+                ? List.of(new Exercise("rest-" + i, "Rest", 0, 0, MuscleGroup.ARMS))
+                : List.of(new Exercise("ex-" + i, "Exercise-" + i, 3, 10, MuscleGroup.ARMS));
 
         return new WorkoutDay("day-" + i, dow, type, targets, exercises);
     }
