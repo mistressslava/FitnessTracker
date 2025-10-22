@@ -27,4 +27,10 @@ public class WorkoutDayController {
     public WorkoutDay addWorkoutDay(@RequestBody WorkoutDayDto workoutDayDto) {
         return workoutDayService.addWorkoutDay(workoutDayDto);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteWorkoutDay(@PathVariable String id) {
+        workoutDayService.deleteWorkoutDay(id);
+    }
+
 }

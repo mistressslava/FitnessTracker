@@ -6,6 +6,7 @@ import org.example.backend.repo.WorkoutDayRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class WorkoutDayService {
@@ -31,5 +32,11 @@ public class WorkoutDayService {
                 workoutDayDto.exercises()
         );
         return workoutDayRepo.save(workoutDay);
+    }
+
+    public void deleteWorkoutDay(String id) {
+        WorkoutDay existing = workoutDayRepo.findById(id)
+                        .orElseThrow(() -> new NoSuchElementException("Exercise with id " + id + " not found"));
+        workoutDayRepo.deleteById(existing.id());
     }
 }

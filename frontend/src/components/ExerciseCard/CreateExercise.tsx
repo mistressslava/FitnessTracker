@@ -2,13 +2,14 @@ import type {ExerciseDto} from "../../types/ExerciseDto.ts";
 import {type FormEvent, useState} from "react";
 import axios from "axios";
 import type {Exercise} from "../../types/Exercise.ts";
+import {MUSCLE_GROUPS, type MuscleGroup} from "../../types/MuscleGroup.ts";
 
 type NewExerciseProps = {
     onAdd: (newExercise: Exercise) => void
 }
 
 export default function CreateExercise({onAdd}: Readonly<NewExerciseProps>) {
-    const [exerciseDto, setExerciseDto] = useState<ExerciseDto>({name: "", sets: 0, reps: 0});
+    const [exerciseDto, setExerciseDto] = useState<ExerciseDto>({name: "", sets: 0, reps: 0, muscleGroup: undefined});
     const [error, setError] = useState("");
 
     function onAddNewExercise(e: FormEvent) {
@@ -17,7 +18,7 @@ export default function CreateExercise({onAdd}: Readonly<NewExerciseProps>) {
         axios.post('/api/exercises', exerciseDto)
             .then((res) => {
                 onAdd(res.data);
-                setExerciseDto({name: "", sets: 0, reps: 0});
+                setExerciseDto({name: "", sets: 0, reps: 0, muscleGroup: undefined});
                 setError("");
             })
             .catch(err => {
@@ -56,6 +57,20 @@ export default function CreateExercise({onAdd}: Readonly<NewExerciseProps>) {
                 className={'border ${error.includes("Sets") ? "border-red-600 border" : ""}'}
                 required
             />
+            </label>
+
+            <label>Muscle group:<select
+                value={exerciseDto.muscleGroup}
+                onChange={e => setExerciseDto({...exerciseDto, muscleGroup: e.target.value as MuscleGroup})}
+                className={'border ${error.includes("Sets") ? "border-red-600 border" : ""}'}
+            >
+                <option value="">Select a muscle group</option>
+                {Object.values(MUSCLE_GROUPS).map((group) => (
+                    <option key={group} value={group}>
+                        {group}
+                    </option>
+                ))}
+            </select>
             </label>
             {error && <span className="text-red-600 text-sm">{error}</span>}
 

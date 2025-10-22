@@ -8,5 +8,9 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;
 
-public record WorkoutDayDto(DayOfWeek day, WorkoutDayType type, Set<MuscleGroup> targetMuscles, List<Exercise> exercises) {
+public record WorkoutDayDto(DayOfWeek day,
+                            WorkoutDayType type,
+                            Set<MuscleGroup> targetMuscles,
+                            List<Exercise> exercises,
+                            MuscleGroup muscleGroup) {
 }
