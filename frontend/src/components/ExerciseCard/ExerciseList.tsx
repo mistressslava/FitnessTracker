@@ -3,6 +3,7 @@ import {useExercises} from "./UseExercises.ts";
 import CreateExercise from "./CreateExercise.tsx";
 import {useState} from "react";
 import type {Exercise} from "../../types/Exercise.ts";
+import "./ExerciseList.css"
 
 export default function ExerciseList() {
 
@@ -36,7 +37,7 @@ export default function ExerciseList() {
 
             {isAdding && <CreateExercise onAdd={handleAdd} />}
 
-            <div className="exercise-column mt-6 grid gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}/>)}
             </div>
         </div>
