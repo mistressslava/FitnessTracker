@@ -7,7 +7,7 @@ import "./ExerciseList.css"
 
 export default function ExerciseList() {
 
-    const { exercises, setExercises, loading, error, getAllExercises } = useExercises();
+    const {exercises, setExercises, loading, error, getAllExercises} = useExercises();
     const [isAdding, setIsAdding] = useState(false);
 
     function handleAdd(newExercise: Exercise) {
@@ -20,6 +20,13 @@ export default function ExerciseList() {
         getAllExercises();
         setIsAdding(false);
     }
+
+    function handleUpdate(updatedExercise: Exercise) {
+        setExercises(prev =>
+            prev.map(e => e.id === updatedExercise.id ? updatedExercise : e)
+        );
+    }
+
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Failed to load exercises.</p>;
@@ -35,10 +42,11 @@ export default function ExerciseList() {
                 {isAdding ? "Cancel" : "Add New Exercise"}
             </button>
 
-            {isAdding && <CreateExercise onAdd={handleAdd} />}
+            {isAdding && <CreateExercise onAdd={handleAdd}/>}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}/>)}
+                {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}
+                                                   onUpdate={handleUpdate}/>)}
             </div>
         </div>
     )
