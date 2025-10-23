@@ -11,7 +11,7 @@ public final class TestFixtures {
     }
 
     public static WorkoutPlan weekPlan(String id) {
-        return new WorkoutPlan(id, "Week " + id, weekDays());
+        return new WorkoutPlan(id, "Test description", "Week " + id, weekDays());
     }
 
     public static List<WorkoutDay> weekDays() {

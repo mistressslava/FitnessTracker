@@ -34,11 +34,11 @@ class WorkoutDayServiceTest {
 
     @Test
     void getAllWorkoutDays_shouldReturnListOfWorkoutDays_whenCalled() {
-        Exercise exercise = new Exercise("1", "exercise1", 4, 12, MuscleGroup.ARMS);
+        Exercise exercise = new Exercise("1", "exercise1", 4, 12, MuscleGroup.BACK);
         WorkoutDay workoutDay = new WorkoutDay(
                 "1",
                 DayOfWeek.FRIDAY,
-                WorkoutDayType.FULL_BODY,
+                WorkoutDayType.UPPER_BODY,
                 Set.of(MuscleGroup.BACK),
                 List.of(exercise))
         ;
@@ -65,18 +65,18 @@ class WorkoutDayServiceTest {
 
     @Test
     void addWorkoutDay_shouldReturnAddedWorkout_whenWorkoutAdded() {
-        Exercise exercise = new Exercise("1", "exercise1", 4, 12, MuscleGroup.ARMS);
+        Exercise exercise = new Exercise("1", "exercise1", 4, 12, MuscleGroup.CORE);
         WorkoutDay expected = new WorkoutDay(
                 "1",
                 DayOfWeek.FRIDAY,
                 WorkoutDayType.FULL_BODY,
-                Set.of(MuscleGroup.BACK),
+                Set.of(MuscleGroup.CORE),
                 List.of(exercise));
 
         WorkoutDayDto workoutDayDto = new WorkoutDayDto(
                 DayOfWeek.FRIDAY,
                 WorkoutDayType.FULL_BODY,
-                Set.of(MuscleGroup.BACK),
+                Set.of(MuscleGroup.CORE),
                 List.of(exercise));
 
         when(idService.randomId()).thenReturn("1");
@@ -96,7 +96,7 @@ class WorkoutDayServiceTest {
                 "1",
                 DayOfWeek.FRIDAY,
                 WorkoutDayType.FULL_BODY,
-                Set.of(MuscleGroup.BACK),
+                Set.of(MuscleGroup.ARMS),
                 List.of(exercise));
 
         when(workoutDayRepo.findById("1")).thenReturn(Optional.of(expected));

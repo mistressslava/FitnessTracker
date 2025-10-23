@@ -7,7 +7,7 @@ import java.util.Set;
 public record WorkoutDay(String id, DayOfWeek day, WorkoutDayType type, Set<MuscleGroup> targetMuscles,
                          List<Exercise> exercises) {
 
-   /* public WorkoutDay {
+    public WorkoutDay {
         targetMuscles= targetMuscles == null ? Set.of() : Set.copyOf(targetMuscles);
         exercises = exercises == null ? List.of() : List.copyOf(exercises);
 
@@ -16,8 +16,8 @@ public record WorkoutDay(String id, DayOfWeek day, WorkoutDayType type, Set<Musc
             exercises = List.of();
         } else {
             boolean targetCheck = targetMuscles.stream()
-                    .allMatch(muscleGroup -> muscleGroup.getCategory() == type);
+                    .allMatch(muscleGroup -> muscleGroup.getCategories().contains(type));
             if (!targetCheck) throw new IllegalArgumentException("All target muscles must match " + type);
         }
-    }*/
+    }
 }
