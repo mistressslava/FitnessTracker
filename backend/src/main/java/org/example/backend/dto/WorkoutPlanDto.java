@@ -4,5 +4,7 @@ import org.example.backend.model.WorkoutDay;
 
 import java.util.List;
 
-public record WorkoutPlanDto(String title, List<WorkoutDay> days) {
+public record WorkoutPlanDto(String title,
+                             String description,
+                             List<WorkoutDay> days) {
 }
