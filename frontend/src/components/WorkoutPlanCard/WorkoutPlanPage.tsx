@@ -61,7 +61,7 @@ export default function WorkoutPlanPage() {
                         const isCurrent = current?.id === p.id;
                         return (
                             <li key={p.id} className="group">
-                                <div className="flex items-center justify-between rounded-lg border border-zinc-700/60 bg-zinc-900 px-3 py-2 group-hover:bg-zinc-800">
+                                <div className="flex items-center justify-between rounded-lg border border-zinc-700/60 px-3 py-2">
                                     <span className="truncate">{p.title}</span>
 
                                     <button
