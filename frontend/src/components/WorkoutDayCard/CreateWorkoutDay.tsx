@@ -39,7 +39,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
         if (isRest) return;
         setWorkoutDto(prev => ({
             ...prev,
-            exercises: [...prev.exercises, {name: "", sets: 3, reps: 8, muscleGroup: undefined}]
+            exercises: [...prev.exercises, {name: "", sets: 3, reps: 8, muscleGroup: "CHEST" as MuscleGroup}]
         }));
     }
 
@@ -56,7 +56,6 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
             const nextExercises = [
                 ...prev.exercises,
                 {
-                    exerciseId: lib.id,
                     name: lib.name,
                     sets: lib.sets,
                     reps: lib.reps,
@@ -115,8 +114,8 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
     }
 
     const libraryPlaceholder = useMemo(() => {
-        if (libLoading) return "Loading…";
-        if (libError) return "Failed to load";
+        if (libLoading) return <p>Loading…</p>;
+        if (libError) return <p>Failed to load</p>;
         if (library.length === 0) return "No exercises";
         return "Choose…";
     }, [libLoading, libError, library.length]);

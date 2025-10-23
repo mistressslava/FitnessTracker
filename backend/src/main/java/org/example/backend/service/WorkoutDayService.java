@@ -30,7 +30,6 @@ public class WorkoutDayService {
                 workoutDayDto.type(),
                 workoutDayDto.targetMuscles(),
                 workoutDayDto.exercises());
-
         return workoutDayRepo.save(workoutDay);
     }
 
