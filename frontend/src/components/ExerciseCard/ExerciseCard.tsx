@@ -7,6 +7,7 @@ import {MUSCLE_GROUPS, type MuscleGroup} from "../../types/MuscleGroup.ts";
 type ExerciseCardProps = {
     handleDeleteExercise: (id: string) => void;
     exercise: Exercise;
+    onUpdate(updatedExercise: Exercise): void;
 }
 
 export default function ExerciseCard(props: Readonly<ExerciseCardProps>) {
@@ -29,7 +30,9 @@ export default function ExerciseCard(props: Readonly<ExerciseCardProps>) {
                 setDraftName(response.data.name);
                 setDraftSets(response.data.sets);
                 setDraftReps(response.data.reps);
-                setDraftMuscleGroup(response.data.muscleGroup)
+                setDraftMuscleGroup(response.data.muscleGroup);
+
+                props.onUpdate?.(response.data);
             })
             .catch(e => console.log(e))
     }

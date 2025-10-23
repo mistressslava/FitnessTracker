@@ -146,35 +146,6 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                         {WORKOUT_DAY_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
                     </select>
                 </label>
-
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm font-medium">Target muscles</span>
-                    <select
-                        multiple
-                        size={8}
-                        className="rounded-lg border px-3 py-2 h-48"
-                        value={workoutDto.targetMuscles}
-                    >
-                        {MUSCLE_GROUPS.map(group => (
-                            <option
-                                key={group}
-                                value={group}
-                                onMouseDown={(e) => {
-                                    e.preventDefault();
-                                    const opt = e.currentTarget as HTMLOptionElement;
-                                    const select = opt.parentElement as HTMLSelectElement;
-
-                                    opt.selected = !opt.selected;
-
-                                    const values = Array.from(select.selectedOptions, o => o.value as MuscleGroup);
-                                    setField("targetMuscles", values);
-                                }}
-                            >
-                                {group}
-                            </option>
-                        ))}
-                    </select>
-                </label>
             </div>
 
             {!isRest && (
@@ -202,6 +173,35 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                                     {library.map(ex => (
                                         <option key={ex.id} value={ex.id}>
                                             {ex.name} · {ex.sets}×{ex.reps}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+
+                            <label className="flex flex-col gap-1">
+                                <span className="text-sm font-medium">Target muscles</span>
+                                <select
+                                    multiple
+                                    size={8}
+                                    className="rounded-lg border px-3 py-2 h-48"
+                                    value={workoutDto.targetMuscles}
+                                >
+                                    {MUSCLE_GROUPS.map(group => (
+                                        <option
+                                            key={group}
+                                            value={group}
+                                            onMouseDown={(e) => {
+                                                e.preventDefault();
+                                                const opt = e.currentTarget as HTMLOptionElement;
+                                                const select = opt.parentElement as HTMLSelectElement;
+
+                                                opt.selected = !opt.selected;
+
+                                                const values = Array.from(select.selectedOptions, o => o.value as MuscleGroup);
+                                                setField("targetMuscles", values);
+                                            }}
+                                        >
+                                            {group}
                                         </option>
                                     ))}
                                 </select>
