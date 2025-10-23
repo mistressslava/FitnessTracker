@@ -4,6 +4,7 @@ import type {MuscleGroup} from "./MuscleGroup.ts";
 import type {ExerciseDto} from "./ExerciseDto.ts";
 
 export type WorkoutDayDto = {
+    id?: string
     day: DayOfWeek,
     type: WorkoutDayType,
     targetMuscles: MuscleGroup[],

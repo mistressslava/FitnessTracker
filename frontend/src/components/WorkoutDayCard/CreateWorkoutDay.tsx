@@ -115,8 +115,8 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
     }
 
     const libraryPlaceholder = useMemo(() => {
-        if (libLoading) return "Loading…";
-        if (libError) return "Failed to load";
+        if (libLoading) return <p>Loading…</p>;
+        if (libError) return <p>Failed to load</p>;
         if (library.length === 0) return "No exercises";
         return "Choose…";
     }, [libLoading, libError, library.length]);
