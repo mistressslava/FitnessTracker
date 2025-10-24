@@ -2,8 +2,8 @@ import ExerciseCard from "./ExerciseCard.tsx";
 import {useExercises} from "./UseExercises.ts";
 import CreateExercise from "./CreateExercise.tsx";
 import {useState} from "react";
-import type {Exercise} from "../../types/Exercise.ts";
-import "./ExerciseList.css"
+import type {Exercise} from "@/types/Exercise.ts";
+import {Card} from "@/components/ui/card.tsx";
 
 export default function ExerciseList() {
 
@@ -32,12 +32,18 @@ export default function ExerciseList() {
     if (error) return <p>Failed to load exercises.</p>;
 
     return (
-        <div>
-            <h2>Your exercise library: </h2>
+        <Card className="bg-card border-border p-8 max-w-6xl mx-auto">
+            <h1 className="text-5xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
+                Your <span className="text-primary">EXERCISE</span> library:
+            </h1>
 
             <button
                 onClick={() => setIsAdding(prev => !prev)}
-                className="bg-indigo-600 text-black px-4 py-2 rounded-xl hover:bg-indigo-700 mb-4"
+                className={`w-80 px-4 py-2 rounded-xl mx-auto transition-colors
+                    ${isAdding
+                        ? "bg-destructive text-destructive-foreground hover:bg-destructive/80"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90"}
+                    `}
             >
                 {isAdding ? "Cancel" : "Add New Exercise"}
             </button>
@@ -48,6 +54,6 @@ export default function ExerciseList() {
                 {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}
                                                    onUpdate={handleUpdate}/>)}
             </div>
-        </div>
+        </Card>
     )
 }
