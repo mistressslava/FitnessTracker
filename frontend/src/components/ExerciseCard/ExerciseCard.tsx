@@ -1,8 +1,9 @@
 import {useState} from "react";
-import type {Exercise} from "../../types/Exercise.ts";
+import type {Exercise} from "@/types/Exercise.ts";
 import DeleteExercise from "./DeleteExercise.tsx";
 import axios from "axios";
-import {MUSCLE_GROUPS, type MuscleGroup} from "../../types/MuscleGroup.ts";
+import {MUSCLE_GROUPS, type MuscleGroup} from "@/types/MuscleGroup.ts";
+import {Card, CardTitle} from "@/components/ui/card.tsx";
 
 type ExerciseCardProps = {
     handleDeleteExercise: (id: string) => void;
@@ -46,13 +47,13 @@ export default function ExerciseCard(props: Readonly<ExerciseCardProps>) {
     }
 
     return (
-        <div className="p-3 bg-white rounded-xl shadow-sm border border-gray-200">
+        <Card className="bg-card border-border p-10 max-w-2xl mx-auto">
             {/*<h3 className="text-sm text-gray-500 font-mono tracking-tight">
                 ID: {props.exercise.id}</h3>*/}
 
             {!isEditing && (
-                <div className="flex flex-col text-gray-800 mt-1">
-                    <h2 className="text-lg font-semibold">{props.exercise.name}</h2>
+                <div className="flex flex-col text-secondary-foreground mx-1">
+                    <CardTitle className="text-lg font-semibold">{props.exercise.name}</CardTitle>
                     <p className="text-md">Sets: {props.exercise.sets}</p>
                     <p className="text-md">Reps: {props.exercise.reps}</p>
                     <p className="text-md">Muscle group: {props.exercise.muscleGroup}</p>
@@ -82,18 +83,27 @@ export default function ExerciseCard(props: Readonly<ExerciseCardProps>) {
             </select>
             }
 
-            {!isEditing && <button onClick={() => {
-                setIsEditing(!isEditing)
-            }}>Edit</button>}
+            <div className="button-group">
+                {!isEditing && <button onClick={() => {
+                    setIsEditing(!isEditing)
+                }}
+                                       className="btn bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/50 transition-colors text-lg border border-border"
+                >Edit</button>}
 
-            {isEditing && <button onClick={() => {
-                updateExercise();
-                setIsEditing(!isEditing)
-            }}>Save</button>}
+                {isEditing && <button onClick={() => {
+                    updateExercise();
+                    setIsEditing(!isEditing)
+                }}
+                                      className="btn bg-primary text-primary-foreground rounded-lg hover:bg-primary/50 transition-colors text-lg border border-border"
+                >Save</button>}
 
-            {isEditing && <button onClick={cancel}>Cancel</button>}
+                {isEditing && <button onClick={cancel}
+                                      className="btn bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/50 transition-colors text-lg border border-border"
 
-            <DeleteExercise id={props.exercise.id} onDelete={props.handleDeleteExercise}/>
-        </div>
+                >Cancel</button>}
+
+                <DeleteExercise id={props.exercise.id} onDelete={props.handleDeleteExercise}/>
+            </div>
+        </Card>
     )
 }

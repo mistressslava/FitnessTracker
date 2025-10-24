@@ -74,7 +74,9 @@ export default function CreateExercise({onAdd}: Readonly<NewExerciseProps>) {
             </label>
             {error && <span className="text-red-600 text-sm">{error}</span>}
 
-            <button type="submit">Add Exercise</button>
+            <button type="submit"
+                    className="w-80 bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary/90 mx-auto">
+                Add Exercise</button>
         </form>
     )
 

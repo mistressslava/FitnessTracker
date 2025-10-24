@@ -123,3 +123,13 @@
         @apply bg-background text-foreground;
     }
 }
+
+@layer components {
+    .button-group {
+        @apply flex flex-col items-center gap-3;
+    }
+
+    .button-group button {
+        @apply w-45 h-8 font-bold rounded-lg text-lg transition-colors;
+    }
+}

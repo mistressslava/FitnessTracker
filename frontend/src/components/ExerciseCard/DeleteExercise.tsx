@@ -27,7 +27,7 @@ export default function DeleteExercise(props: Readonly<DeleteExerciseProps>) {
     return (
         <>
             <button onClick={handleDeleteExercise}
-                    className="border border-red-500 text-red-600 px-2 py-1 rounded hover:bg-red-50"
+                    className="btn bg-destructive text-secondary-foreground rounded-lg hover:bg-destructive/80 transition-colors test-lg border border-border"
             >Delete</button>
 
             {error && <p className="text-red-600 mt-1">{error}</p>}
