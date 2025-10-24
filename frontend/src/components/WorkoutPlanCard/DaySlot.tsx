@@ -36,7 +36,7 @@ export default function DaySlot(props: Readonly<DaySlotProps>) {
                         <option value="">— Choose existing —</option>
                         {props.library.map(d => (
                             <option key={d.id} value={d.id}>
-                                {d.day} • {d.type} • {(d.exercises ?? []).map(ex => ex.name).join(", ") || "No exercises"}
+                                {d.type} • {(d.exercises ?? []).map(ex => ex.name).join(", ") || "No exercises"}
                             </option>
                         ))}
                     </select>
