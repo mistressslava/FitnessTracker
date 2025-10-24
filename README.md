@@ -1,6 +1,6 @@
 # 🏋️‍♀️ FitnessTracker
 
-![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
+![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=springboot)
 ![React](https://img.shields.io/badge/React-18-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
