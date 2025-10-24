@@ -101,7 +101,7 @@ export default function CreateExercise({onAdd}: Readonly<NewExerciseProps>) {
                     <SelectContent
                     position="popper"
                     side="right"
-                        className="w-80 bg-background text-primary border border-border">
+                        className="w-80 bg-background border border-border">
                         {Object.values(MUSCLE_GROUPS).map((group) => (
                             <SelectItem key={group} value={group}>
                                 {group}

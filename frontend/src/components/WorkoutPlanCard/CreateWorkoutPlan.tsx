@@ -1,10 +1,14 @@
 import {useMemo, useState} from "react";
 import axios from "axios";
 import {useWorkoutDays} from "../WorkoutDayCard/useWorkoutDays.ts";
-import {DAY_OF_WEEK_VALUES, type DayOfWeek} from "../../types/DayOfWeek.ts";
-import type {WorkoutDay} from "../../types/WorkoutDay.ts";
-import type {WorkoutDayDto} from "../../types/WorkoutDayDto.ts";
-import DaySlot from "./DaySlot.tsx";
+import {DAY_OF_WEEK_VALUES, type DayOfWeek} from "@/types/DayOfWeek.ts";
+import type {WorkoutDay} from "@/types/WorkoutDay.ts";
+import type {WorkoutDayDto} from "@/types/WorkoutDayDto.ts";
+import DayCard from "./DayCard.tsx";
+import {Card} from "@/components/ui/card.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import { Textarea } from "@/components/ui/textarea"
+import {Button} from "@/components/ui/button.tsx";
 
 export default function CreateWorkoutPlan() {
 
@@ -20,7 +24,7 @@ export default function CreateWorkoutPlan() {
     });
 
     function updateDay(weekDay: DayOfWeek, dto: WorkoutDayDto) {
-        setSelected(prev => ({ ...prev, [weekDay]: dto }));
+        setSelected(prev => ({...prev, [weekDay]: dto}));
     }
 
     const isComplete = useMemo(() => DAY_OF_WEEK_VALUES.every(d => !!selected[d]), [selected]);
@@ -57,48 +61,53 @@ export default function CreateWorkoutPlan() {
     if (error) return <p>❌Failed to load days.❌</p>
 
     return (
-        <div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1 space-y-2">
-                    <input
-                        className="w-full border rounded px-3 py-2"
-                        placeholder="Plan name..."
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                    />
-                    <textarea
-                        className="w-full border rounded px-3 py-2"
-                        placeholder="Description..."
-                        rows={4}
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
-                    />
-                    <button
-                        className="w-full rounded-xl border px-4 py-2 disabled:opacity-50"
-                        onClick={createPlan}
-                        disabled={!isComplete || !title.trim()}
-                    >
-                        Save plan
-                    </button>
-                    {submitError && <p className="text-red-600 text-sm">{submitError}</p>}
-                </div>
-
-                <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
-                    {DAY_OF_WEEK_VALUES.map(d => (
-                        <DaySlot
-                            key={d}
-                            weekDay={d}
-                            library={library}
-                            value={selected[d]}
-                            onChange={(dto) => updateDay(d, dto)}
-                            onCreatedToLibrary={(created: WorkoutDay) => {
-                                addToLibrary(created);
-                                updateDay(d, created);
-                            }}
+        <>
+            <h1 className="text-5xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
+                Create your custom <span className="text-primary">PLAN</span>:
+            </h1>
+            <Card>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-1 space-y-2">
+                        <Input
+                            className="w-90 h-15 border border-border rounded px-3 py-2"
+                            placeholder="Plan name..."
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
                         />
-                    ))}
+                        <Textarea
+                            className="w-90 h-35 ml-3 border border-border rounded px-3 py-3"
+                            placeholder="Description..."
+                            rows={4}
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                        />
+                        <Button
+                            className="w-90 rounded-xl border px-4 py-2 disabled:opacity-50"
+                            onClick={createPlan}
+                            disabled={!isComplete || !title.trim()}
+                        >
+                            Save plan
+                        </Button>
+                        {submitError && <p className="text-red-600 text-sm">{submitError}</p>}
+                    </div>
+
+                    <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
+                        {DAY_OF_WEEK_VALUES.map(d => (
+                            <DayCard
+                                key={d}
+                                weekDay={d}
+                                library={library}
+                                value={selected[d]}
+                                onChange={(dto) => updateDay(d, dto)}
+                                onCreatedToLibrary={(created: WorkoutDay) => {
+                                    addToLibrary(created);
+                                    updateDay(d, created);
+                                }}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </div>
+            </Card>
+        </>
     )
 }

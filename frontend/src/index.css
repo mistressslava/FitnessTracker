@@ -133,3 +133,8 @@
         @apply w-45 h-8 font-bold rounded-lg text-lg transition-colors;
     }
 }
+
+.select-trigger {
+    height: calc(var(--spacing) * 13);
+}
+
