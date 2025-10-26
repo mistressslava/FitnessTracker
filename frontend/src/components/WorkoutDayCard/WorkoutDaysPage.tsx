@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import CreateWorkoutDay from "./CreateWorkoutDay";
-import type { WorkoutDay } from "../../types/WorkoutDay";
-import type {WorkoutDayDto} from "../../types/WorkoutDayDto.ts";
+import type {WorkoutDay} from "@/types/WorkoutDay.ts";
+import type {WorkoutDayDto} from "@/types/WorkoutDayDto.ts";
+import {Card, CardContent} from "@/components/ui/card.tsx";
 
 export default function WorkoutDaysPage() {
     const [days, setDays] = useState<WorkoutDay[]>([]);
@@ -13,12 +14,17 @@ export default function WorkoutDaysPage() {
     function getAllDays() {
         setLoading(true);
         axios.get<WorkoutDay[]>("/api/workout-days")
-            .then(r => { setDays(r.data); setError(""); })
+            .then(r => {
+                setDays(r.data);
+                setError("");
+            })
             .catch(e => setError(String(e.response?.data ?? e.message)))
             .finally(() => setLoading(false));
     }
 
-    useEffect(() => { getAllDays(); }, []);
+    useEffect(() => {
+        getAllDays();
+    }, []);
 
     //CREATE
     function createDay(dto: WorkoutDayDto) {
@@ -41,40 +47,83 @@ export default function WorkoutDaysPage() {
     if (error) return <p className="text-red-600">Failed: {error}</p>;
 
     return (
-        <div>
-            <h2>Your workout days</h2>
+        <div className="mx-auto space-y-6">
+            <h1 className="text-5xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
+                <span className="text-primary">Create</span> your custom <span className="text-primary">WORKOUT</span>:
+            </h1>
+            <Card className="bg-card border-border p-8 max-w-6xl mx-auto">
+                <button
+                    onClick={() => setIsAdding(prev => !prev)}
+                    className={`w-80 px-4 py-2 rounded-xl mx-auto transition-colors
+                    ${isAdding
+                        ? "bg-destructive text-destructive-foreground hover:bg-destructive/80"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90"}
+                    `}
+                >
+                    {isAdding ? "Cancel" : "Add New Day"}
+                </button>
 
-            <button
-                onClick={() => setIsAdding(p => !p)}
-                className="bg-indigo-600 text-black px-4 py-2 rounded-xl hover:bg-indigo-700 mb-4"
-            >
-                {isAdding ? "Cancel" : "Add New Day"}
-            </button>
+                {isAdding && <CreateWorkoutDay onAdd={createDay}/>}
 
-            {isAdding && <CreateWorkoutDay onAdd={createDay} />}
-
-            <ul className="space-y-3">
-                {days.map(d => (
-                    <li key={d.id} className="p-3 rounded-xl border">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <b>{d.day}</b> — {d.type}
-                                {d.targetMuscles?.length ? <> · {d.targetMuscles.join(", ")}</> : null}
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {days.map(day => (
+                        <Card key={day.id} className="p-3 rounded-xl border">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col gap-1 text-left">
+                                    {day.day}
+                                    {day.type &&
+                                        <span className="text-sm font-normal text-muted-foreground">
+                                            {day.type}
+                                        </span>
+                                    }
+                                    <div className="text-m gap-2">
+                                        {day.targetMuscles?.length ? <> {day.targetMuscles.join(", ")}</> : null}
+                                    </div>
+                                </div>
+                                <button className="text-xs text-red-600 underline" onClick={() => deleteDay(day.id)}>
+                                    Delete
+                                </button>
                             </div>
-                            <button className="text-xs text-red-600 underline" onClick={() => deleteDay(d.id)}>
-                                Delete
-                            </button>
-                        </div>
-                        {d.exercises?.length > 0 && (
-                            <div className="text-sm mt-1">
-                                {d.exercises.map((ex) => (
-                                    <div key={ex.id}>{ex.name}: {ex.sets}×{ex.reps}</div>
-                                ))}
-                            </div>
-                        )}
-                    </li>
-                ))}
-            </ul>
+                            {day.exercises?.length > 0 && (
+                                <CardContent className="text-l mt-1">
+                                    <div className="space-y-4">
+                                        {day.exercises.map((exercise) => (
+                                            <div
+                                                key={exercise.id}
+                                                className="flex items-start justify-between gap-4 pb-4 border-b
+                                                            last:border-b-0 last:pb-0"
+                                            >
+                                                <div className="flex-1 text-left">
+                                                    <h3 className="font-semibold text-sm leading-relaxed">
+                                                        {exercise.name}
+                                                    </h3>
+                                                </div>
+                                                {exercise.sets > 0 && exercise.reps > 0 && (
+                                                    <div
+                                                        className="flex gap-3 text-sm text-muted-foreground shrink-0">
+                                                        <div className="text-center">
+                                                            <div className="font-semibold text-foreground">
+                                                                {exercise.sets}
+                                                            </div>
+                                                            <div className="text-xs">sets</div>
+                                                        </div>
+                                                        <div className="text-muted-foreground">×</div>
+                                                        <div className="text-center">
+                                                            <div
+                                                                className="font-semibold text-foreground">{exercise.reps}</div>
+                                                            <div className="text-xs">reps</div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            )}
+                        </Card>
+                    ))}
+                </div>
+            </Card>
         </div>
     );
 }

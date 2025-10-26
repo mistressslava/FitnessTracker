@@ -7,9 +7,9 @@ import {Badge} from "@/components/ui/badge";
 
 export default function WorkoutPlanPage() {
     const [plans, setPlans] = useState<WorkoutPlan[]>([]);
-    const [current, setCurrent] = useState<WorkoutPlan | null>(null);
+    // const [current, setCurrent] = useState<WorkoutPlan | null>(null);
     const [loading, setLoading] = useState(true);
-    const [busyId, setBusyId] = useState<string | null>(null);
+    // const [busyId, setBusyId] = useState<string | null>(null);
     const [error, setError] = useState<string>("");
 
     const [openPlanId, setOpenPlanId] = useState<string | null>(null);
@@ -33,16 +33,16 @@ export default function WorkoutPlanPage() {
         getAllWorkoutPlans();
     }, []);
 
-    function makeCurrent(id: string) {
-        setBusyId(id);
-        axios.put(`/api/workout-plans/${id}`)
-            .then(res => {
-                setCurrent(res.data);
-                setError("");
-            })
-            .catch(e => setError(e.response.data ?? "Failed to set current plan"))
-            .finally(() => setBusyId(null));
-    }
+    /*    function makeCurrent(id: string) {
+            setBusyId(id);
+            axios.put(`/api/workout-plans/${id}`)
+                .then(res => {
+                    setCurrent(res.data);
+                    setError("");
+                })
+                .catch(e => setError(e.response.data ?? "Failed to set current plan"))
+                .finally(() => setBusyId(null));
+        }*/
 
     if (loading) {
         return (
@@ -94,8 +94,8 @@ export default function WorkoutPlanPage() {
                                                         {dayPLan.day}
                                                         {dayPLan.type &&
                                                             <span className="text-sm font-normal text-muted-foreground">
-                                                        {dayPLan.type}
-                                                        </span>
+                                                                {dayPLan.type}
+                                                            </span>
                                                         }
                                                     </div>
                                                     <Badge variant="secondary">
@@ -106,7 +106,7 @@ export default function WorkoutPlanPage() {
                                             </CardHeader>
                                             <CardContent className="pt-6">
                                                 <div className="space-y-4">
-                                                    {dayPLan.type === "REST" ? <h3>{dayPLan.type}</h3> : ""}
+                                                    {dayPLan.type === "REST" ? <h3>Rest Day</h3> : ""}
                                                     {dayPLan.exercises.map((exercise) => (
                                                         <div
                                                             key={exercise.id}

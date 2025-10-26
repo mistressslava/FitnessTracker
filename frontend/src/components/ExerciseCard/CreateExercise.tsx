@@ -71,7 +71,7 @@ export default function CreateExercise({onAdd}: Readonly<NewExerciseProps>) {
                     Reps:
                 </Label>
                 <Input
-                    type="number"
+                    type="number" min={1}
                     value={exerciseDto.reps}
                     onChange={e => setExerciseDto({...exerciseDto, reps: Number(e.target.value)})}
                     className={'w-80 h-12 border-border ${error.includes("Sets") ? "border-red-600 border" : ""}'}

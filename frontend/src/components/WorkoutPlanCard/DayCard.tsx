@@ -9,7 +9,7 @@ import {CirclePlus} from 'lucide-react';
 
 type DaySlotProps = {
     weekDay: DayOfWeek;
-    library: WorkoutDayDto[];
+    library: WorkoutDay[];
     value?: WorkoutDayDto;
     onChange: (dayDto: WorkoutDayDto) => void;
     onCreatedToLibrary: (created: WorkoutDay) => void;
@@ -40,8 +40,8 @@ export default function DayCard(props: Readonly<DaySlotProps>) {
                         <SelectTrigger className="select-trigger w-120 border rounded px-2 py-1">— Choose existing
                             —</SelectTrigger>
                         <SelectContent position="popper">
-                            {props.library.map(d => (
-                                <SelectItem key={d.id} value={d.id}>
+                            {props.library.map((d) => (
+                                <SelectItem key={d.id} value={String(d.id)}>
                                     {d.type} • {(d.exercises ?? []).map(ex => ex.name).join(", ") || "No exercises"}
                                 </SelectItem>
                             ))}
@@ -49,7 +49,6 @@ export default function DayCard(props: Readonly<DaySlotProps>) {
 
                     </Select>
 
-                    {/* Always show the CURRENT value summary, even if it’s not from library */}
                     {props.value && (
                         <p className="text-xs text-gray-500">
                             Selected

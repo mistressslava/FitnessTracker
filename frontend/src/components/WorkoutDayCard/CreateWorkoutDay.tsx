@@ -1,10 +1,14 @@
 import {type FormEvent, useMemo, useState} from "react";
-import type {WorkoutDayDto} from "../../types/WorkoutDayDto.ts";
-import {MUSCLE_GROUPS, type MuscleGroup} from "../../types/MuscleGroup.ts";
-import {WORKOUT_DAY_TYPES, type WorkoutDayType} from "../../types/WorkoutDayType.ts";
-import {DAY_OF_WEEK_VALUES, type DayOfWeek} from "../../types/DayOfWeek.ts";
-import type {Exercise} from "../../types/Exercise.ts";
+import type {WorkoutDayDto} from "@/types/WorkoutDayDto.ts";
+import {MUSCLE_GROUPS, type MuscleGroup} from "@/types/MuscleGroup.ts";
+import {WORKOUT_DAY_TYPES, type WorkoutDayType} from "@/types/WorkoutDayType.ts";
+import {DAY_OF_WEEK_VALUES, type DayOfWeek} from "@/types/DayOfWeek.ts";
+import type {Exercise} from "@/types/Exercise.ts";
 import {useExercises} from "../ExerciseCard/UseExercises.ts";
+import {Label} from "@/components/ui/label.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
 type CreateWorkoutDayProps = {
     onAdd: (dto: WorkoutDayDto) => void;
@@ -122,9 +126,10 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
 
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4 rounded-2xl border">
+        <form onSubmit={handleSubmit}
+              className="flex flex-col justify-center mx-auto gap-3 p-4 border rounded-2xl shadow h-auto w-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <label className="flex flex-col gap-1">
+                <Label className="flex flex-col gap-1">
                     <span className="text-sm font-medium">Day</span>
                     <select
                         className="rounded-lg border px-3 py-2"
@@ -133,9 +138,9 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                     >
                         {DAY_OF_WEEK_VALUES.map(day => <option key={day} value={day}>{day}</option>)}
                     </select>
-                </label>
+                </Label>
 
-                <label className="flex flex-col gap-1">
+                <Label className="flex flex-col gap-1">
                     <span className="text-sm font-medium">Type</span>
                     <select
                         className="rounded-lg border px-3 py-2"
@@ -144,45 +149,37 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                     >
                         {WORKOUT_DAY_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
                     </select>
-                </label>
+                </Label>
             </div>
 
             {!isRest && (
-                <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                        <h3 className="font-semibold">Exercises</h3>
-                        <div className="flex gap-3">
-                            <button type="button" onClick={addEmptyExercise} className="text-sm underline">
-                                + Add empty
-                            </button>
-
-                            <label className="text-sm flex items-center gap-2">
-                                <span>Add from library:</span>
+                <div className="space-y-6">
+                    <h3 className="font-semibold mb-3">Exercises</h3>
+                    <div className="space-y-1.5">
+                        <Label htmlFor="exercise-select" className="text-sm">
+                            Add from library:
+                        </Label>
+                        <Select onValueChange={(id) => addFromLibrary(id)}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder={libraryPlaceholder}/>
+                            </SelectTrigger>
+                            <SelectContent className="max-h-60">
+                                {library.map(ex => (
+                                    <SelectItem key={ex.id} value={ex.id}>
+                                        {ex.name} · {ex.sets}×{ex.reps}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="target-muscles" className="text-sm font-medium">
+                                Target muscles
+                            </Label>
                                 <select
-                                    className="rounded-lg border px-2 py-1"
-                                    defaultValue=""
-                                    onChange={e => {
-                                        if (e.target.value) {
-                                            addFromLibrary(e.target.value);
-                                            e.currentTarget.value = "";
-                                        }
-                                    }}
-                                >
-                                    <option value="" disabled>{libraryPlaceholder}</option>
-                                    {library.map(ex => (
-                                        <option key={ex.id} value={ex.id}>
-                                            {ex.name} · {ex.sets}×{ex.reps}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-
-                            <label className="flex flex-col gap-1">
-                                <span className="text-sm font-medium">Target muscles</span>
-                                <select
+                                    id="target-muscles"
                                     multiple
                                     size={8}
-                                    className="rounded-lg border px-3 py-2 h-48"
+                                    className="flex justify-start rounded-lg border px-3 py-2 h-48"
                                     value={workoutDto.targetMuscles}
                                 >
                                     {MUSCLE_GROUPS.map(group => (
@@ -204,39 +201,48 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                                         </option>
                                     ))}
                                 </select>
-                            </label>
                         </div>
                     </div>
-
+                    <Button
+                        variant="secondary"
+                        type="button"
+                        onClick={addEmptyExercise} className="text-sm mr-auto ">
+                        + Add empty
+                    </Button>
                     {workoutDto.exercises.map((ex, i) => (
-                        <div key={i} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
-                            <label className="md:col-span-6 flex flex-col gap-1">
+                        <div key={i} className="flex flex-1 md:grid-cols-12 justify-between items-end">
+
+                            <Label className="md:col-span-6 flex flex-col gap-1">
                                 <span className="text-xs">Name</span>
-                                <input
-                                    className="rounded-lg border px-3 py-2"
+                                <Input
+                                    type="text"
                                     value={ex.name}
                                     onChange={e => updateExercise(i, {name: e.target.value})}
-                                    placeholder="Bench Press"
+                                    placeholder="Bench Press..."
+                                    className='w-40 rounded-lg border px-3 py-2 h-12 border-border ${error.includes("Name") ? "border-red-600 border" : ""}'
+                                    required
                                 />
-                            </label>
-                            <label className="md:col-span-3 flex flex-col gap-1">
+                            </Label>
+                            <Label className="md:col-span-3 flex flex-col gap-1">
                                 <span className="text-xs">Sets</span>
-                                <input
+                                <Input
                                     type="number" min={1}
-                                    className="rounded-lg border px-3 py-2"
                                     value={ex.sets}
                                     onChange={e => updateExercise(i, {sets: Number(e.target.value)})}
+                                    className='w-40 rounded-lg border px-3 py-2 h-12 border-border ${error.includes("Sets") ? "border-red-600 border" : ""}'
+                                    required
                                 />
-                            </label>
-                            <label className="md:col-span-3 flex flex-col gap-1">
+                            </Label>
+                            <Label className="md:col-span-3 flex flex-col gap-1">
                                 <span className="text-xs">Reps</span>
-                                <input
+                                <Input
                                     type="number" min={1}
-                                    className="rounded-lg border px-3 py-2"
                                     value={ex.reps}
                                     onChange={e => updateExercise(i, {reps: Number(e.target.value)})}
+                                    className='rounded-lg border px-3 py-2 h-12 border-border ${error.includes("Reps") ? "border-red-600 border" : ""}'
+                                    required
                                 />
-                            </label>
+                            </Label>
 
                             <div className="md:col-span-12">
                                 <button type="button" onClick={() => removeExerciseRow(i)}
@@ -250,7 +256,10 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
             )}
 
             {error && <p className="text-red-600 text-sm">{error}</p>}
-            <button type="submit" className="px-4 py-2 rounded-xl border">Create day</button>
+            <button type="submit"
+                    className="w-80 bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary/90 mx-auto">
+                Create day
+            </button>
         </form>
     );
 }
