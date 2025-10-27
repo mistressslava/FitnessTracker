@@ -7,8 +7,9 @@ import type {WorkoutDayDto} from "@/types/WorkoutDayDto.ts";
 import DayCard from "./DayCard.tsx";
 import {Card} from "@/components/ui/card.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import { Textarea } from "@/components/ui/textarea"
+import {Textarea} from "@/components/ui/textarea"
 import {Button} from "@/components/ui/button.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function CreateWorkoutPlan() {
 
@@ -57,6 +58,8 @@ export default function CreateWorkoutPlan() {
             })
     }
 
+    const nav = useNavigate();
+
     if (loading) return <p>Loading workout library...</p>;
     if (error) return <p>❌Failed to load days.❌</p>
 
@@ -83,7 +86,10 @@ export default function CreateWorkoutPlan() {
                         />
                         <Button
                             className="w-90 rounded-xl border px-4 py-2 disabled:opacity-50"
-                            onClick={createPlan}
+                            onClick={() => {
+                                createPlan();
+                                nav("/plans")
+                            }}
                             disabled={!isComplete || !title.trim()}
                         >
                             Save plan

@@ -48,8 +48,6 @@ export default function ExerciseCard(props: Readonly<ExerciseCardProps>) {
 
     return (
         <Card className="bg-card border-border p-10 max-w-2xl mx-auto">
-            {/*<h3 className="text-sm text-gray-500 font-mono tracking-tight">
-                ID: {props.exercise.id}</h3>*/}
 
             {!isEditing && (
                 <div className="flex flex-col text-secondary-foreground mx-1">

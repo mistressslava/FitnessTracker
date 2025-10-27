@@ -29,31 +29,32 @@ export default function ExerciseList() {
 
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Failed to load exercises.</p>;
+    if (error) return <p className="text-red-600">Failed to load exercises.</p>;
 
     return (
-        <Card className="bg-card border-border p-8 max-w-6xl mx-auto">
+        <div className="mx-auto space-y-6">
             <h1 className="text-5xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
                 Your <span className="text-primary">EXERCISE</span> library:
             </h1>
-
-            <button
-                onClick={() => setIsAdding(prev => !prev)}
-                className={`w-80 px-4 py-2 rounded-xl mx-auto transition-colors
+            <Card className="bg-card border-border p-8 max-w-6xl mx-auto">
+                <button
+                    onClick={() => setIsAdding(prev => !prev)}
+                    className={`w-80 px-4 py-2 rounded-xl mx-auto transition-colors
                     ${isAdding
                         ? "bg-destructive text-destructive-foreground hover:bg-destructive/80"
                         : "bg-primary text-primary-foreground hover:bg-primary/90"}
                     `}
-            >
-                {isAdding ? "Cancel" : "Add New Exercise"}
-            </button>
+                >
+                    {isAdding ? "Cancel" : "Add New Exercise"}
+                </button>
 
-            {isAdding && <CreateExercise onAdd={handleAdd}/>}
+                {isAdding && <CreateExercise onAdd={handleAdd}/>}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}
-                                                   onUpdate={handleUpdate}/>)}
-            </div>
-        </Card>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {exercises.map(ex => <ExerciseCard key={ex.id} exercise={ex} handleDeleteExercise={handleDelete}
+                                                       onUpdate={handleUpdate}/>)}
+                </div>
+            </Card>
+        </div>
     )
 }

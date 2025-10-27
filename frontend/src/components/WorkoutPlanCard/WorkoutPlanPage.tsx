@@ -1,15 +1,16 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import type {WorkoutPlan} from "@/types/WorkoutPlan.ts";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Card, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Badge} from "@/components/ui/badge";
+import WorkoutDayCard from "@/components/WorkoutDayCard/WorkoutDayCard.tsx";
 
 
 export default function WorkoutPlanPage() {
     const [plans, setPlans] = useState<WorkoutPlan[]>([]);
-    const [current, setCurrent] = useState<WorkoutPlan | null>(null);
+    // const [current, setCurrent] = useState<WorkoutPlan | null>(null);
     const [loading, setLoading] = useState(true);
-    const [busyId, setBusyId] = useState<string | null>(null);
+    // const [busyId, setBusyId] = useState<string | null>(null);
     const [error, setError] = useState<string>("");
 
     const [openPlanId, setOpenPlanId] = useState<string | null>(null);
@@ -33,16 +34,16 @@ export default function WorkoutPlanPage() {
         getAllWorkoutPlans();
     }, []);
 
-    function makeCurrent(id: string) {
-        setBusyId(id);
-        axios.put(`/api/workout-plans/${id}`)
-            .then(res => {
-                setCurrent(res.data);
-                setError("");
-            })
-            .catch(e => setError(e.response.data ?? "Failed to set current plan"))
-            .finally(() => setBusyId(null));
-    }
+    /*    function makeCurrent(id: string) {
+            setBusyId(id);
+            axios.put(`/api/workout-plans/${id}`)
+                .then(res => {
+                    setCurrent(res.data);
+                    setError("");
+                })
+                .catch(e => setError(e.response.data ?? "Failed to set current plan"))
+                .finally(() => setBusyId(null));
+        }*/
 
     if (loading) {
         return (
@@ -94,8 +95,8 @@ export default function WorkoutPlanPage() {
                                                         {dayPLan.day}
                                                         {dayPLan.type &&
                                                             <span className="text-sm font-normal text-muted-foreground">
-                                                        {dayPLan.type}
-                                                        </span>
+                                                                {dayPLan.type}
+                                                            </span>
                                                         }
                                                     </div>
                                                     <Badge variant="secondary">
@@ -104,42 +105,8 @@ export default function WorkoutPlanPage() {
                                                     </Badge>
                                                 </CardTitle>
                                             </CardHeader>
-                                            <CardContent className="pt-6">
-                                                <div className="space-y-4">
-                                                    {dayPLan.type === "REST" ? <h3>{dayPLan.type}</h3> : ""}
-                                                    {dayPLan.exercises.map((exercise) => (
-                                                        <div
-                                                            key={exercise.id}
-                                                            className="flex items-start justify-between gap-4 pb-4 border-b
-                                                            last:border-b-0 last:pb-0"
-                                                        >
-                                                            <div className="flex-1 text-left">
-                                                                <h3 className="font-semibold text-sm leading-relaxed">
-                                                                    {exercise.name}
-                                                                </h3>
-                                                            </div>
-                                                            {exercise.sets > 0 && exercise.reps > 0 && (
-                                                                <div
-                                                                    className="flex gap-3 text-sm text-muted-foreground shrink-0">
-                                                                    <div className="text-center">
-                                                                        <div className="font-semibold text-foreground">
-                                                                            {exercise.sets}
-                                                                        </div>
-                                                                        <div className="text-xs">sets</div>
-                                                                    </div>
-                                                                    <div className="text-muted-foreground">×</div>
-                                                                    <div className="text-center">
-                                                                        <div
-                                                                            className="font-semibold text-foreground">{exercise.reps}</div>
-                                                                        <div className="text-xs">reps</div>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
-                                                </div>
 
-                                            </CardContent>
+                                            <WorkoutDayCard exercises={dayPLan.exercises} isRestDay={dayPLan.type === "REST"}/>
                                         </Card>
                                     ))}
                                 </div>
