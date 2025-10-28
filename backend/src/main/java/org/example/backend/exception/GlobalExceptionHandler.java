@@ -1,6 +1,5 @@
 package org.example.backend.exception;
 
-import org.example.backend.planGenerator.ChatGPTRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

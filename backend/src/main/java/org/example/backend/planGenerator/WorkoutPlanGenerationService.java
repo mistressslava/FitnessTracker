@@ -1,8 +1,7 @@
 package org.example.backend.planGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.backend.model.WorkoutDay;
-import org.example.backend.model.WorkoutDayType;
+import org.example.backend.exception.ChatGPTRequestException;;
 import org.example.backend.model.WorkoutPlan;
 import org.example.backend.repo.WorkoutPlanRepo;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +16,14 @@ import java.util.Map;
 @Service
 public class WorkoutPlanGenerationService {
 
-    private final RestClient restClient;
+    private final RestClient restClient; //ChatClient
     private final WorkoutPlanRepo repo;
     private final ObjectMapper mapper;
 
     public WorkoutPlanGenerationService(
             RestClient.Builder builder,
             @Value("${app.openai-api-key}") String openaiApiKey,
-            @Value("${app.openai-base-url:https://api.com/v1}") String baseUrl,
+            @Value("${app.openai-base-url:https://api.openai.com/v1}") String baseUrl,
             WorkoutPlanRepo repo,
             ObjectMapper mapper) {
         this.restClient = builder
@@ -169,23 +168,11 @@ public class WorkoutPlanGenerationService {
 
         try {
             WorkoutPlan plan = mapper.readValue(json, WorkoutPlan.class);
-            validate(plan);
             return repo.save(plan);
 
         } catch (Exception e) {
             throw new ChatGPTRequestException("Invalid JSON from OpenAI: " + e.getMessage());
         }
-    }
-
-    private void validate(WorkoutPlan p) {
-        if (p.days() == null || p.days().size() != 7)
-            throw new IllegalArgumentException("Plan must contain exactly 7 days");
-        long uniq = p.days().stream().map(WorkoutDay::day).distinct().count();
-        if (uniq != 7) throw new IllegalArgumentException("Each dayOfWeek must be unique");
-        p.days().forEach(d -> {
-            if (d.type() == WorkoutDayType.REST && d.exercises() != null && !d.exercises().isEmpty())
-                throw new IllegalArgumentException("REST day must have no exercises");
-        });
     }
 }
 
