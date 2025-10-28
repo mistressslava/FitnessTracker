@@ -22,11 +22,13 @@ public class WorkoutPlanGenerationService {
     private final ObjectMapper mapper;
 
     public WorkoutPlanGenerationService(
+            RestClient.Builder builder,
             @Value("${app.openai-api-key}") String openaiApiKey,
+            @Value("${app.openai-base-url:https://api.com/v1}") String baseUrl,
             WorkoutPlanRepo repo,
             ObjectMapper mapper) {
-        this.restClient = RestClient.builder()
-                .baseUrl("https://api.openai.com/v1")
+        this.restClient = builder
+                .baseUrl(baseUrl)
                 .defaultHeader("Authorization", "Bearer " + openaiApiKey)
                 .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .build();
@@ -34,7 +36,7 @@ public class WorkoutPlanGenerationService {
         this.mapper = mapper;
     }
 
-    public WorkoutPlan generatePlanJson(String prompt) {
+    public WorkoutPlan generatePlanAndSave(String prompt) {
 
         var messages = List.of(
                 new ChatGPTRequestMessage("system",
@@ -85,7 +87,6 @@ public class WorkoutPlanGenerationService {
                                         "items", Map.of(
                                                 "type", "object",
                                                 "additionalProperties", false,
-                                                // 🔹 поле "day" замість dayOfWeek
                                                 "required", List.of("day", "type", "targetMuscles", "exercises"),
                                                 "properties", Map.of(
                                                         "day", Map.of(

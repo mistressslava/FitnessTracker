@@ -25,7 +25,7 @@ public class WorkoutPlanGenerationController {
             throw new IllegalArgumentException("Prompt is missing or invalid JSON");
         }
 
-        WorkoutPlan plan = service.generatePlanJson(request.prompt());
+        WorkoutPlan plan = service.generatePlanAndSave(request.prompt());
         return ResponseEntity.ok(plan);
     }
 }
