@@ -26,4 +26,9 @@ public class GlobalExceptionHandler extends RuntimeException{
     public String handleIllegalArgumentException(IllegalArgumentException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(ChatGPTRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleChat(ChatGPTRequestException e) { return e.getMessage(); }
+
 }

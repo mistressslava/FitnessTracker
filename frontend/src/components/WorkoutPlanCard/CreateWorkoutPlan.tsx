@@ -10,6 +10,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {Textarea} from "@/components/ui/textarea"
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
+import PlanGenerator from "@/components/PlanGenerator/PlanGenerator.tsx";
 
 export default function CreateWorkoutPlan() {
 
@@ -68,7 +69,11 @@ export default function CreateWorkoutPlan() {
             <h1 className="text-5xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
                 Create your custom <span className="text-primary">PLAN</span>:
             </h1>
+            <PlanGenerator/>
             <Card>
+                <h2 className="text-3xl md:text-3xl font-bold text-foreground tracking-tight">
+                    Create your own plan
+                </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-2">
                         <Input
