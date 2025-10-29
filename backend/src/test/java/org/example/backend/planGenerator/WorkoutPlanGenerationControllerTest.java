@@ -21,7 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+properties = {
+        "app.openai-api-key=test-key",
+        "app.openai-base-url=http://localhost:${wiremock.server.port}"
+})
 @AutoConfigureMockMvc
 class WorkoutPlanGenerationControllerTest {
 
