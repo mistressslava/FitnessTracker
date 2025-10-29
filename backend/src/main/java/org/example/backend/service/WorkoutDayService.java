@@ -33,6 +33,20 @@ public class WorkoutDayService {
         return workoutDayRepo.save(workoutDay);
     }
 
+    public WorkoutDay updateWorkoutDayById(String id, WorkoutDayDto workoutDayDto) {
+        WorkoutDay existing = workoutDayRepo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Exercise with id " + id + " not found"));
+
+        WorkoutDay updated = new WorkoutDay(
+                existing.id(),
+                workoutDayDto.day(),
+                workoutDayDto.type(),
+                workoutDayDto.targetMuscles(),
+                workoutDayDto.exercises());
+
+        return workoutDayRepo.save(updated);
+    }
+
     public void deleteWorkoutDay(String id) {
         WorkoutDay existing = workoutDayRepo.findById(id)
                         .orElseThrow(() -> new NoSuchElementException("Exercise with id " + id + " not found"));
