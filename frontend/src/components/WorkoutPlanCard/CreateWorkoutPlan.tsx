@@ -76,30 +76,32 @@ export default function CreateWorkoutPlan() {
                 </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-2">
-                        <Input
-                            className="w-90 h-15 border border-border rounded px-3 py-2"
-                            placeholder="Plan name..."
-                            value={title}
-                            onChange={e => setTitle(e.target.value)}
-                        />
-                        <Textarea
-                            className="w-90 h-35 ml-3 border border-border rounded px-3 py-3"
-                            placeholder="Description..."
-                            rows={4}
-                            value={description}
-                            onChange={e => setDescription(e.target.value)}
-                        />
-                        <Button
-                            className="w-90 rounded-xl border px-4 py-2 disabled:opacity-50"
-                            onClick={() => {
-                                createPlan();
-                                nav("/plans")
-                            }}
-                            disabled={!isComplete || !title.trim()}
-                        >
-                            Save plan
-                        </Button>
-                        {submitError && <p className="text-red-600 text-sm">{submitError}</p>}
+                        <div className="flex flex-col space-y-4 ml-3">
+                            <Input
+                                className="w-90 h-15 border border-border rounded px-3 py-2"
+                                placeholder="Plan name..."
+                                value={title}
+                                onChange={e => setTitle(e.target.value)}
+                            />
+                            <Textarea
+                                className="w-90 h-35 border border-border rounded px-3 py-3"
+                                placeholder="Description..."
+                                rows={4}
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                            />
+                            <Button
+                                className="w-90 rounded-xl border px-4 py-2 disabled:opacity-50"
+                                onClick={() => {
+                                    createPlan();
+                                    nav("/plans")
+                                }}
+                                disabled={!isComplete || !title.trim()}
+                            >
+                                Save plan
+                            </Button>
+                            {submitError && <p className="text-red-600 text-sm">{submitError}</p>}
+                        </div>
                     </div>
 
                     <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
