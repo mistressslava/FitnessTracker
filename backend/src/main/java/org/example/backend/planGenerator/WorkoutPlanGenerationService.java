@@ -1,7 +1,7 @@
 package org.example.backend.planGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.backend.exception.ChatGPTRequestException;;
+import org.example.backend.exception.ChatGPTRequestException;
 import org.example.backend.model.WorkoutPlan;
 import org.example.backend.repo.WorkoutPlanRepo;
 import org.springframework.beans.factory.annotation.Value;
