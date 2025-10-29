@@ -1,89 +1,95 @@
 package org.example.backend.planGenerator;
 
-import org.example.backend.model.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-properties = {
-        "app.openai-api-key=test-key",
-        "app.openai-base-url=http://localhost:${wiremock.server.port}"
-})
+@SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureMockRestServiceServer
 class WorkoutPlanGenerationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private WorkoutPlanGenerationService service;
+    @Autowired
+    private MockRestServiceServer mockServer;
 
     @Test
     void generatePlan_shouldBeSuccessful() throws Exception {
-        when(service.generatePlanAndSave(any()))
-                .thenReturn(new WorkoutPlan("id-1", "Full Week", "desc",
-                        List.of(
-                                new WorkoutDay("1", DayOfWeek.MONDAY, WorkoutDayType.REST, Set.of(), List.of()),
-                                new WorkoutDay("2", DayOfWeek.TUESDAY, WorkoutDayType.UPPER_BODY, Set.of(MuscleGroup.BACK),
-                                        List.of(new Exercise("ex-1", "Row", 4, 10, MuscleGroup.BACK))),
-                                new WorkoutDay("3", DayOfWeek.WEDNESDAY, WorkoutDayType.REST, Set.of(), List.of()),
-                                new WorkoutDay("4", DayOfWeek.THURSDAY, WorkoutDayType.LOWER_BODY, Set.of(MuscleGroup.LEGS),
-                                        List.of(new Exercise("ex-2", "Squat", 5, 5, MuscleGroup.LEGS))),
-                                new WorkoutDay("5", DayOfWeek.FRIDAY, WorkoutDayType.REST, Set.of(), List.of()),
-                                new WorkoutDay("6", DayOfWeek.SATURDAY, WorkoutDayType.FULL_BODY, Set.of(MuscleGroup.CORE),
-                                        List.of(new Exercise("ex-3", "Plank", 3, 60, MuscleGroup.CORE))),
-                                new WorkoutDay("7", DayOfWeek.SUNDAY, WorkoutDayType.REST, Set.of(), List.of())
-                        )));
+        //GIVEN
+        String planJson = """
+        {
+          "title": "Full Week Strength Plan",
+          "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+          "days": [
+            { "id":"day-1","day":"MONDAY","type":"UPPER_BODY","targetMuscles":["CHEST","BACK","SHOULDERS","ARMS"],"exercises":[] },
+            { "id":"day-2","day":"TUESDAY","type":"LOWER_BODY","targetMuscles":["LEGS","GLUTES","CALVES"],"exercises":[] },
+            { "id":"day-3","day":"WEDNESDAY","type":"FULL_BODY","targetMuscles":["CHEST","BACK","CORE","CARDIO"],"exercises":[] },
+            { "id":"day-4","day":"THURSDAY","type":"REST","targetMuscles":[],"exercises":[] },
+            { "id":"day-5","day":"FRIDAY","type":"REST","targetMuscles":[],"exercises":[] },
+            { "id":"day-6","day":"SATURDAY","type":"REST","targetMuscles":[],"exercises":[] },
+            { "id":"day-7","day":"SUNDAY","type":"REST","targetMuscles":[],"exercises":[] }
+          ]
+        }
+        """;
 
-        mockMvc.perform(post("/api/generate-plan")
+        String contentString = new ObjectMapper().writeValueAsString(planJson);
+
+        String openAiLike = """
+               {
+                "choices": [
+                  { "message": { "content": %s } }
+                ]
+               }
+               """.formatted(contentString);
+
+        mockServer.expect(requestTo("https://api.openai.com/v1/chat/completions"))
+                .andExpect(header("Authorization", "Bearer test-key"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess(openAiLike, MediaType.APPLICATION_JSON));
+
+        //WHEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/generate-plan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"prompt": "for beginner, 7 days"}
+                                  {"prompt": "for beginner, 7 days"}
                                 """))
+
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Full Week Strength Plan"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.days[0].type").value("UPPER_BODY"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.days.length()").value(7))
+
                 .andExpect(status().isOk());
+        mockServer.verify();
     }
 
     @Test
     void generatePlan_shouldThrowException() throws Exception {
+        //GIVEN
 
-        mockMvc.perform(post("/api/generate-plan")
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/generate-plan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"prompt": null}
-                                """))
-                .andExpect(status().isBadRequest());
-        verifyNoInteractions(service);
-    }
-
-    @Test
-    void generatePlan_shouldThrowException_returns400() throws Exception {
-        when(service.generatePlanAndSave(any()))
-                .thenThrow(new IllegalArgumentException("Prompt is missing or invalid JSON"));
-
-        mockMvc.perform(post("/api/generate-plan")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"prompt": null}
+                                  {"prompt": null}
                                 """))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Prompt is missing or invalid JSON"));
-        verifyNoInteractions(service);
+                .andExpect(MockMvcResultMatchers.content().string("Prompt is missing or invalid JSON"));
+
+        mockServer.verify();
     }
 }
