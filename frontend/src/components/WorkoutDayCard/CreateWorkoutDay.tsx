@@ -16,6 +16,7 @@ type CreateWorkoutDayProps = {
 
 export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps>) {
     const [workoutDto, setWorkoutDto] = useState<WorkoutDayDto>({
+        id: "",
         day: "MONDAY",
         type: "UPPER_BODY",
         targetMuscles: [],
@@ -60,6 +61,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
             const nextExercises = [
                 ...prev.exercises,
                 {
+                    id: lib.id,
                     name: lib.name,
                     sets: lib.sets,
                     reps: lib.reps,

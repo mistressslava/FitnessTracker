@@ -4,6 +4,7 @@ import type {Exercise} from "@/types/Exercise.ts";
 import axios from "axios";
 import {Input} from "@/components/ui/input.tsx";
 import {MUSCLE_GROUPS, type MuscleGroup} from "@/types/MuscleGroup.ts";
+import {Button} from "@/components/ui/button.tsx";
 
 type WorkoutDayProps = {
     workoutDay: WorkoutDay;
@@ -51,12 +52,13 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
     return (
         <div className="space-y-4">
 
-            <button onClick={() => {
+            <Button
+                onClick={() => {
                 updateWorkoutDay();
                 setIsEditing(!isEditing)
             }}
-                                  className="bg-primary text-primary-foreground"
-            >Save</button>
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >Save</Button>
 
             {draftExercises.map((exercise, index) => (
                 <div key={props.workoutDay.id}
