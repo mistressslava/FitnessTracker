@@ -79,19 +79,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
 
 
     function validate(dto: WorkoutDayDto): string | null {
-        if (!dto.day) return "Choose a day of the week";
-        if (!dto.type) return "Choose a type of workout";
-        if (dto.type === "REST") {
-            if (dto.targetMuscles.length > 0) return "For REST you must not add target Muscles.";
-            if (dto.exercises.length > 0) return "For REST exercises must be empty.";
-            return null;
-        }
         if (dto.exercises.length === 0) return "Add at least one exercise.";
-        for (const [i, ex] of dto.exercises.entries()) {
-            if (!ex.name.trim()) return `Exercise #${i + 1}: name is empty.`;
-            if (ex.sets <= 0) return `Вправа #${i + 1}: sets must be > 0.`;
-            if (ex.reps <= 0) return `Вправа #${i + 1}: reps must be > 0.`;
-        }
         return null;
     }
 
@@ -115,7 +103,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
             day: "MONDAY",
             type: "UPPER_BODY",
             targetMuscles: [],
-            exercises: [{name: "", sets: 3, reps: 8, muscleGroup: undefined}],
+            exercises: [{name: "", sets: 3, reps: 8, muscleGroup: "BACK"}],
         });
     }
 
