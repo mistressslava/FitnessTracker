@@ -16,7 +16,6 @@ type CreateWorkoutDayProps = {
 
 export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps>) {
     const [workoutDto, setWorkoutDto] = useState<WorkoutDayDto>({
-        id: "",
         day: "MONDAY",
         type: "UPPER_BODY",
         targetMuscles: [],
@@ -33,9 +32,10 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
         setWorkoutDto(prev => ({...prev, [key]: value}));
     }
 
-    function updateExercise(i: number, patch: Partial<WorkoutDayDto["exercises"][number]>) {
+    function updateExercise(i: number, next: WorkoutDayDto["exercises"][number]) {
         setWorkoutDto(prev => {
-            const exercises = prev.exercises.map((ex, idx) => (idx === i ? {...ex, ...patch} : ex));
+            const exercises = prev.exercises.slice();
+            exercises[i] = next;
             return {...prev, exercises};
         });
     }
@@ -44,11 +44,11 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
         if (isRest) return;
         setWorkoutDto(prev => ({
             ...prev,
-            exercises: [...prev.exercises, {name: "", sets: 3, reps: 8, muscleGroup: "CHEST" as MuscleGroup}]
+            exercises: [...prev.exercises, {id: crypto.randomUUID(), name: "", sets: 3, reps: 8, muscleGroup: "CHEST" as MuscleGroup}]
         }));
     }
 
-    function removeExerciseRow(i: number) {
+    function removeExercise(i: number) {
         if (isRest) return;
         setWorkoutDto(prev => ({...prev, exercises: prev.exercises.filter((_, idx) => idx !== i)}));
     }
@@ -177,32 +177,32 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                             <Label htmlFor="target-muscles" className="text-sm font-medium">
                                 Target muscles
                             </Label>
-                                <select
-                                    id="target-muscles"
-                                    multiple
-                                    size={8}
-                                    className="flex justify-start rounded-lg border px-3 py-2 h-48"
-                                    value={workoutDto.targetMuscles}
-                                >
-                                    {MUSCLE_GROUPS.map(group => (
-                                        <option
-                                            key={group}
-                                            value={group}
-                                            onMouseDown={(e) => {
-                                                e.preventDefault();
-                                                const opt = e.currentTarget as HTMLOptionElement;
-                                                const select = opt.parentElement as HTMLSelectElement;
+                            <select
+                                id="target-muscles"
+                                multiple
+                                size={8}
+                                className="flex justify-start rounded-lg border px-3 py-2 h-48"
+                                value={workoutDto.targetMuscles}
+                            >
+                                {MUSCLE_GROUPS.map(group => (
+                                    <option
+                                        key={group}
+                                        value={group}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+                                            const opt = e.currentTarget as HTMLOptionElement;
+                                            const select = opt.parentElement as HTMLSelectElement;
 
-                                                opt.selected = !opt.selected;
+                                            opt.selected = !opt.selected;
 
-                                                const values = Array.from(select.selectedOptions, o => o.value as MuscleGroup);
-                                                setField("targetMuscles", values);
-                                            }}
-                                        >
-                                            {group}
-                                        </option>
-                                    ))}
-                                </select>
+                                            const values = Array.from(select.selectedOptions, o => o.value as MuscleGroup);
+                                            setField("targetMuscles", values);
+                                        }}
+                                    >
+                                        {group}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                     <Button
@@ -212,16 +212,16 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                         + Add empty
                     </Button>
                     {workoutDto.exercises.map((ex, i) => (
-                        <div key={i} className="flex flex-1 md:grid-cols-12 justify-between items-end">
+                        <div key={ex.id ?? i} className="grid grid-cols-4 gap-3 mb-4">
 
-                            <Label className="md:col-span-6 flex flex-col gap-1">
+                            <Label className="md:col-span-3 flex flex-col gap-1">
                                 <span className="text-xs">Name</span>
                                 <Input
                                     type="text"
                                     value={ex.name}
-                                    onChange={e => updateExercise(i, {name: e.target.value})}
+                                    onChange={e => updateExercise(i, {...ex, name: e.target.value})}
                                     placeholder="Bench Press..."
-                                    className='w-40 rounded-lg border px-3 py-2 h-12 border-border ${error.includes("Name") ? "border-red-600 border" : ""}'
+                                    className='w-40 rounded-lg border px-3 py-2 h-9 border-border ${error.includes("Name") ? "border-red-600 border" : ""}'
                                     required
                                 />
                             </Label>
@@ -230,24 +230,45 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                                 <Input
                                     type="number" min={1}
                                     value={ex.sets}
-                                    onChange={e => updateExercise(i, {sets: Number(e.target.value)})}
-                                    className='w-40 rounded-lg border px-3 py-2 h-12 border-border ${error.includes("Sets") ? "border-red-600 border" : ""}'
+                                    onChange={e => updateExercise(i, {...ex, sets: Number(e.target.value)})}
+                                    className='w-15 rounded-lg border px-3 py-2 h-9 border-border ${error.includes("Sets") ? "border-red-600 border" : ""}'
                                     required
                                 />
                             </Label>
-                            <Label className="md:col-span-3 flex flex-col gap-1">
+                            <Label className="md:col-span-2 flex flex-col gap-1">
                                 <span className="text-xs">Reps</span>
                                 <Input
                                     type="number" min={1}
                                     value={ex.reps}
-                                    onChange={e => updateExercise(i, {reps: Number(e.target.value)})}
-                                    className='rounded-lg border px-3 py-2 h-12 border-border ${error.includes("Reps") ? "border-red-600 border" : ""}'
+                                    onChange={e => updateExercise(i, {...ex, reps: Number(e.target.value)})}
+                                    className='w-15 rounded-lg border px-3 py-2 h-9 border-border ${error.includes("Reps") ? "border-red-600 border" : ""}'
                                     required
                                 />
                             </Label>
+                            <div className="md:col-span-2 flex flex-col gap-1">
+                                <Select
+                                    value={ex.muscleGroup}
+                                    onValueChange={(value: MuscleGroup) => {
+                                        updateExercise(i, {...ex, muscleGroup: value})
+                                    }}
+                                >
+                                    <span className="text-xs">Group</span>
+                                    <SelectTrigger
+                                        className="w-25 px-3 py-2 bg-background text-foreground border border-border rounded-lg">
+                                        <SelectValue placeholder="Select muscle group"/>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.values(MUSCLE_GROUPS).map(group => (
+                                            <SelectItem key={group} value={group}>
+                                                {group}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
                             <div className="md:col-span-12">
-                                <button type="button" onClick={() => removeExerciseRow(i)}
+                                <button type="button" onClick={() => removeExercise(i)}
                                         className="text-xs text-red-600 underline">
                                     Remove
                                 </button>
