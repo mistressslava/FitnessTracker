@@ -29,7 +29,7 @@ public class WorkoutDayController {
         return workoutDayService.addWorkoutDay(workoutDayDto);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<WorkoutDay> updateWorkoutDayById(@PathVariable String id, @RequestBody WorkoutDayDto workoutDayDto) {
         WorkoutDay updatedWorkoutDay = workoutDayService.updateWorkoutDayById(id, workoutDayDto);
         return ResponseEntity.ok(updatedWorkoutDay);
