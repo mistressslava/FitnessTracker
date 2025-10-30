@@ -42,10 +42,28 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
 
     function addEmptyExercise() {
         if (isRest) return;
-        setWorkoutDto(prev => ({
-            ...prev,
-            exercises: [...prev.exercises, {id: crypto.randomUUID(), name: "", sets: 3, reps: 8, muscleGroup: "CHEST" as MuscleGroup}]
-        }));
+
+        setWorkoutDto(prev => {
+            const newExercise = {
+                id: crypto.randomUUID(),
+                name: "",
+                sets: 3,
+                reps: 12,
+                muscleGroup: "CHEST" as MuscleGroup,
+            };
+
+            const nextTargets =
+                newExercise.muscleGroup &&
+                !prev.targetMuscles.includes(newExercise.muscleGroup)
+                    ? [...prev.targetMuscles, newExercise.muscleGroup]
+                    : prev.targetMuscles;
+
+            return {
+                ...prev,
+                exercises: [...prev.exercises, newExercise],
+                targetMuscles: nextTargets,
+            };
+        });
     }
 
     function removeExercise(i: number) {
@@ -103,7 +121,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
             day: "MONDAY",
             type: "UPPER_BODY",
             targetMuscles: [],
-            exercises: [{name: "", sets: 3, reps: 8, muscleGroup: "BACK"}],
+            exercises: [{name: "", sets: 3, reps: 8, muscleGroup: "BACK" as MuscleGroup}],
         });
     }
 
@@ -243,7 +261,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                                     <span className="text-xs">Group</span>
                                     <SelectTrigger
                                         className="w-25 px-3 py-2 bg-background text-foreground border border-border rounded-lg">
-                                        <SelectValue placeholder="Select muscle group"/>
+                                        <SelectValue placeholder="Muscle group"/>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {Object.values(MUSCLE_GROUPS).map(group => (
