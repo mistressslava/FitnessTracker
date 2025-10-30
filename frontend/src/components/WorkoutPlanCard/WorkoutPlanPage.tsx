@@ -106,7 +106,7 @@ export default function WorkoutPlanPage() {
                                                 </CardTitle>
                                             </CardHeader>
 
-                                            <WorkoutDayCard exercises={dayPLan.exercises} isRestDay={dayPLan.type === "REST"}/>
+                                            <WorkoutDayCard isRestDay={dayPLan.type === "REST"} workoutDay={dayPLan}/>
                                         </Card>
                                     ))}
                                 </div>
