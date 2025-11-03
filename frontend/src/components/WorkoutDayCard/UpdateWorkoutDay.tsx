@@ -92,17 +92,35 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
         }
     }
 
+    function handleCancel() {
+        setDraftDay(props.workoutDay.day)
+        setDraftType(props.workoutDay.type)
+        setDraftTargetMuscle(props.workoutDay.targetMuscles ?? [])
+        setDraftExercises(props.workoutDay.exercises ?? [])
+        setIsEditing(false)
+        props.onCancel?.()
+    }
+
 
     return (
         <div className="space-y-4">
-
-            <Button
-                onClick={() => {
-                    updateWorkoutDay();
-                    setIsEditing(!isEditing)
-                }}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >Save</Button>
+            <div className="flex gap-2 justify-center">
+                <Button
+                    onClick={() => {
+                        updateWorkoutDay();
+                        setIsEditing(!isEditing)
+                    }}
+                    className="bg-primary text-primary-foreground hover:bg-primary/80"
+                >
+                    Save
+                </Button>
+                <Button
+                    onClick={handleCancel}
+                    className="bg-destructive text-primary-foreground hover:bg-destructive/80"
+                >
+                    Cancel
+                </Button>
+            </div>
 
             {draftExercises.map((exercise, index) => (
                 <div key={exercise.id}
