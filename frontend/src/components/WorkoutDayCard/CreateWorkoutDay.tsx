@@ -94,7 +94,7 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
             const nextExercises = [
                 ...prev.exercises,
                 {
-                    id: lib.id,
+                    id: crypto.randomUUID(),
                     name: lib.name,
                     sets: lib.sets,
                     reps: lib.reps,

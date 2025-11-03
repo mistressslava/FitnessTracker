@@ -5,6 +5,9 @@ import axios from "axios";
 import {Input} from "@/components/ui/input.tsx";
 import {MUSCLE_GROUPS, type MuscleGroup} from "@/types/MuscleGroup.ts";
 import {Button} from "@/components/ui/button.tsx";
+import {Label} from "@/components/ui/label.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import {useExercises} from "@/components/ExerciseCard/UseExercises.ts";
 
 type WorkoutDayProps = {
     workoutDay: WorkoutDay;
@@ -19,6 +22,8 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
     const [draftExercises, setDraftExercises] = useState<Exercise[]>(props.workoutDay.exercises ?? []);
 
     const [isEditing, setIsEditing] = useState(false);
+
+    const {exercises: library} = useExercises();
 
     useEffect(() => {
         setDraftDay(props.workoutDay.day);
@@ -63,6 +68,30 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
         setDraftExercises(prev => prev.filter(ex => ex.id !== id));
     }
 
+    //Add Exercise inside of Workout day
+    function addFromLibrary(exId: string) {
+        const lib = library.find((x: Exercise) => x.id === exId);
+        if (!lib) return;
+
+        if (draftExercises.some(ex => ex.id === lib.id)) {
+            return;
+        }
+
+        const newExercise: Exercise = {
+            id: lib.id,
+            name: lib.name,
+            sets: lib.sets,
+            reps: lib.reps,
+            muscleGroup: lib.muscleGroup,
+        }
+
+        setDraftExercises(prev => [...prev, newExercise])
+
+        if (lib.muscleGroup && !draftTargetMuscle.includes(lib.muscleGroup)) {
+            setDraftTargetMuscle(prev => [...prev, lib.muscleGroup])
+        }
+    }
+
 
     return (
         <div className="space-y-4">
@@ -76,7 +105,7 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
             >Save</Button>
 
             {draftExercises.map((exercise, index) => (
-                <div key={props.workoutDay.id}
+                <div key={exercise.id}
                      className="flex items-start justify-between gap-4 pb-4 border-b last:border-b-0 last:pb-0">
                     <div key={exercise.id}>
                         <div className="flex-1 text-left">
@@ -103,8 +132,8 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                                     onChange={e => {
                                         setDraftExercises(prev =>
                                             prev.map((ex, i) =>
-                                                i === index ? {...ex, sets: Number(e.target.value)} : ex
-                                            ))
+                                                (i === index ? {...ex, sets: Number(e.target.value)} : ex))
+                                        )
                                     }}
                                 />
                                 <div className="text-xs">sets</div>
@@ -118,8 +147,8 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                                     onChange={e => {
                                         setDraftExercises(prev =>
                                             prev.map((ex, i) =>
-                                                i === index ? {...ex, reps: Number(e.target.value)} : ex
-                                            ))
+                                                (i === index ? {...ex, reps: Number(e.target.value)} : ex))
+                                        )
                                     }}
                                 />
                                 <div className="text-xs">reps</div>
@@ -137,8 +166,8 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                             onChange={e => {
                                 setDraftExercises(prev =>
                                     prev.map((ex, i) =>
-                                        i === index ? {...ex, muscleGroup: e.target.value as MuscleGroup} : ex
-                                    ))
+                                        (i === index ? {...ex, muscleGroup: e.target.value as MuscleGroup} : ex))
+                                )
                             }}
                         >
                             {Object.values(MUSCLE_GROUPS).map(group => (
@@ -149,10 +178,25 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                             ))
                             }
                         </select>
-
                     </div>
                 </div>
             ))}
+
+            <Label htmlFor="exercise-select" className="text-sm">
+                Add from library:
+            </Label>
+            <Select onValueChange={(id) => addFromLibrary(id)}>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Choose exercise..."/>
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                    {library.map(ex => (
+                        <SelectItem key={ex.id} value={ex.id}>
+                            {ex.name} · {ex.sets}×{ex.reps}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
         </div>
     )
 
