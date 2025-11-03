@@ -110,13 +110,13 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                         updateWorkoutDay();
                         setIsEditing(!isEditing)
                     }}
-                    className="bg-primary text-primary-foreground hover:bg-primary/80"
+                    className="bg-primary text-primary-foreground px-4 py-2 hover:bg-primary/80"
                 >
                     Save
                 </Button>
                 <Button
                     onClick={handleCancel}
-                    className="bg-destructive text-primary-foreground hover:bg-destructive/80"
+                    className="bg-destructive text-primary-foreground px-4 py-2 hover:bg-destructive/80"
                 >
                     Cancel
                 </Button>
@@ -125,10 +125,12 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
             {draftExercises.map((exercise, index) => (
                 <div key={exercise.id}
                      className="flex items-start justify-between gap-4 pb-4 border-b last:border-b-0 last:pb-0">
-                    <div key={exercise.id}>
+                    <div className="flex-1 space-y-3">
                         <div className="flex-1 text-left">
                             <Input
-                                className="font-semibold text-sm leading-relaxed"
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2
+                                text-base font-semibold leading-relaxed focus-visible:outline-none focus-visible:ring-2
+                                focus-visible:ring-ring"
                                 type="text"
                                 value={exercise.name}
                                 onChange={e => {
@@ -144,7 +146,9 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                         <div className="flex gap-3 text-sm text-muted-foreground shrink-0">
                             <div className="text-center">
                                 <Input
-                                    className="font-semibold text-foreground w-20"
+                                    className="flex w-20 rounded-md border border-input bg-background px-3 py-2
+                                    text-base font-semibold text-foreground focus-visible:outline-none
+                                    focus-visible:ring-2 focus-visible:ring-ring"
                                     type="number"
                                     value={exercise.sets}
                                     onChange={e => {
@@ -159,7 +163,9 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                             <div className="text-muted-foreground">×</div>
                             <div className="text-center">
                                 <Input
-                                    className="font-semibold text-foreground w-20"
+                                    className="flex w-20 rounded-md border border-input bg-background px-3 py-2
+                                    text-base font-semibold text-foreground focus-visible:outline-none
+                                    focus-visible:ring-2 focus-visible:ring-ring"
                                     type="number"
                                     value={exercise.reps}
                                     onChange={e => {
@@ -172,7 +178,7 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                                 <div className="text-xs">reps</div>
                             </div>
                             <button
-                                className="text-xs text-red-600 underline"
+                                className="text-xs text-red-600 underline hover:text-red-700"
                                 onClick={() => handleDelete(exercise.id)}
                             >
                                 Delete exercise
@@ -187,9 +193,10 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                                         (i === index ? {...ex, muscleGroup: e.target.value as MuscleGroup} : ex))
                                 )
                             }}
+                            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm
+                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                             {Object.values(MUSCLE_GROUPS).map(group => (
-
                                 <option key={group} value={group}>
                                     {group}
                                 </option>
@@ -200,11 +207,12 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                 </div>
             ))}
 
-            <Label htmlFor="exercise-select" className="text-sm">
-                Add from library:
+            <Label htmlFor="exercise-select" className="block text-sm font-medium">
+                Add exercise from library:
             </Label>
             <Select onValueChange={(id) => addFromLibrary(id)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="flex w-full rounded-md border border-input bg-background px-3 py-2
+                text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     <SelectValue placeholder="Choose exercise..."/>
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
