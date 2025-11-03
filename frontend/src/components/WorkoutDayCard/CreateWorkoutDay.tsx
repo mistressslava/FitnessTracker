@@ -34,9 +34,24 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
 
     function updateExercise(i: number, next: WorkoutDayDto["exercises"][number]) {
         setWorkoutDto(prev => {
+            const prevEx = prev.exercises[i];
             const exercises = prev.exercises.slice();
             exercises[i] = next;
-            return {...prev, exercises};
+
+            let targets = prev.targetMuscles;
+
+            if (next.muscleGroup && !targets.includes(next.muscleGroup)) {
+                targets = [...targets, next.muscleGroup];
+            }
+
+            if (prevEx.muscleGroup && prevEx.muscleGroup !== next.muscleGroup) {
+                const stillUsed = exercises.some(e => e.muscleGroup === prevEx.muscleGroup);
+                if (!stillUsed) {
+                    targets = targets.filter(g => g !== prevEx.muscleGroup);
+                }
+            }
+
+            return {...prev, exercises, targetMuscles: targets};
         });
     }
 
@@ -189,21 +204,15 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
                                 size={8}
                                 className="flex justify-start rounded-lg border px-3 py-2 h-48"
                                 value={workoutDto.targetMuscles}
+                                onChange={(e) => {
+                                    const values = Array.from(e.currentTarget.selectedOptions, o => o.value as MuscleGroup);
+                                    setField("targetMuscles", values);
+                                }}
                             >
                                 {MUSCLE_GROUPS.map(group => (
                                     <option
                                         key={group}
                                         value={group}
-                                        onMouseDown={(e) => {
-                                            e.preventDefault();
-                                            const opt = e.currentTarget as HTMLOptionElement;
-                                            const select = opt.parentElement as HTMLSelectElement;
-
-                                            opt.selected = !opt.selected;
-
-                                            const values = Array.from(select.selectedOptions, o => o.value as MuscleGroup);
-                                            setField("targetMuscles", values);
-                                        }}
                                     >
                                         {group}
                                     </option>

@@ -29,6 +29,15 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
 
     // UPDATE
     function updateWorkoutDay() {
+
+        const draftTargetMuscle = Array.from(
+            new Set(
+                (draftExercises ?? [])
+                    .map(ex => ex.muscleGroup)
+                    .filter(Boolean)
+            )
+        );
+
         axios.put('/api/workout-days/' + props.workoutDay.id, {
             day: draftDay,
             type: draftType,
@@ -38,7 +47,7 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
             .then(response => {
                 setDraftDay(response.data.day);
                 setDraftType(response.data.type);
-                setDraftTargetMuscle(response.data.targetMuscle ?? []);
+                setDraftTargetMuscle(response.data.targetMuscles ?? []);
                 setDraftExercises(response.data.exercises ?? []);
                 setIsEditing(false);
                 props.onSaved?.(response.data);
@@ -49,14 +58,20 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
             });
     }
 
+    //Delete Exercise inside of Workout day
+    function handleDelete(id: string) {
+        setDraftExercises(prev => prev.filter(ex => ex.id !== id));
+    }
+
+
     return (
         <div className="space-y-4">
 
             <Button
                 onClick={() => {
-                updateWorkoutDay();
-                setIsEditing(!isEditing)
-            }}
+                    updateWorkoutDay();
+                    setIsEditing(!isEditing)
+                }}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
             >Save</Button>
 
@@ -109,6 +124,12 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                                 />
                                 <div className="text-xs">reps</div>
                             </div>
+                            <button
+                                className="text-xs text-red-600 underline"
+                                onClick={() => handleDelete(exercise.id)}
+                            >
+                                Delete exercise
+                            </button>
                         </div>
 
                         <select
