@@ -52,4 +52,9 @@ public class ExerciseService {
                 .orElseThrow(() -> new NoSuchElementException(buildExerciseNotFoundMessage(id)));
         exerciseRepo.deleteById(existing.id());
     }
+
+    public Exercise getExerciseById(String id) {
+        return exerciseRepo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(buildExerciseNotFoundMessage(id)));
+    }
 }

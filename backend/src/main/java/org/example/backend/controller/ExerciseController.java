@@ -28,6 +28,12 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseList);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Exercise> getExerciseById(@PathVariable String id) {
+        Exercise exercise = exerciseService.getExerciseById(id);
+        return ResponseEntity.ok(exercise);
+    }
+
     @PostMapping
     public ResponseEntity<Exercise> addNewExercise(@RequestBody ExerciseDto exercise) {
         Exercise newExercise = exerciseService.addNewExercise(exercise);
