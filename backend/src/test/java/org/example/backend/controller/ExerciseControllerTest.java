@@ -203,4 +203,43 @@ class ExerciseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Exercise with id 1 not found"));
     }
+
+    @Test
+    @DirtiesContext
+    void getExerciseById_shouldReturnExercise_whenIdExist() throws Exception {
+        //GIVEN
+        Exercise exercise = new Exercise("1", "Exercise 1", 3, 10, MuscleGroup.ARMS);
+        exerciseRepo.save(exercise);
+        //WHEN
+        mockMvc.perform(get("/api/exercises/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                 {
+                                    "name": "Exercise 1",
+                                     "sets": 3,
+                                     "reps": 10
+                                 }
+                                 """))
+                //THEN
+                .andExpect(content().json("""
+                                 {
+                                    "id": "1",
+                                    "name": "Exercise 1",
+                                    "sets": 3,
+                                    "reps": 10
+                                 }
+                                 """))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @DirtiesContext
+    void getExerciseById_shouldThrowException_whenIdNotExist() throws Exception {
+        //WHEN
+        mockMvc.perform(get("/api/exercises/1"))
+                //THEN
+                .andExpect(content().string("Exercise with id 1 not found"))
+                .andExpect(status().isNotFound());
+    }
 }
