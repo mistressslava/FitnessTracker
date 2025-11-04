@@ -5,12 +5,16 @@ import type {WorkoutDay} from "@/types/WorkoutDay.ts";
 import type {WorkoutDayDto} from "@/types/WorkoutDayDto.ts";
 import {Card} from "@/components/ui/card.tsx";
 import WorkoutDayCard from "@/components/WorkoutDayCard/WorkoutDayCard.tsx";
+import UpdateWorkoutDay from "@/components/WorkoutDayCard/UpdateWorkoutDay.tsx";
 
 export default function WorkoutDaysPage() {
     const [days, setDays] = useState<WorkoutDay[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const [isAdding, setIsAdding] = useState(false);
+
+    const [editingDay, setEditingDay] = useState<WorkoutDay | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     function getAllDays() {
         setLoading(true);
@@ -47,6 +51,7 @@ export default function WorkoutDaysPage() {
     if (loading) return <p>Loading…</p>;
     if (error) return <p className="text-red-600">Failed: {error}</p>;
 
+
     return (
         <div className="mx-auto space-y-6">
             <h1 className="text-5xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
@@ -67,29 +72,62 @@ export default function WorkoutDaysPage() {
                 {isAdding && <CreateWorkoutDay onAdd={createDay}/>}
 
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {days.map(day => (
-                        <Card key={day.id} className="p-3 rounded-xl border">
-                            <div className="flex items-center justify-between">
-                                <div className="flex flex-col gap-1 text-left">
-                                    {day.day}
-                                    {day.type &&
-                                        <span className="text-sm font-normal text-muted-foreground">
+                    {days.map(day => {
+                        const editing = isEditing && editingDay?.id === day.id;
+
+                        return (
+                            <Card key={day.id} className="p-3 rounded-xl border">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col gap-1 text-left">
+                                        {day.day}
+                                        {day.type &&
+                                            <span className="text-sm font-normal text-muted-foreground">
                                             {day.type}
                                         </span>
-                                    }
-                                    <div className="text-m gap-2">
-                                        {day.targetMuscles?.length ? <> {day.targetMuscles.join(", ")}</> : null}
+                                        }
+                                        <div className="text-m gap-2">
+                                            {day.targetMuscles?.length ? <> {day.targetMuscles.join(", ")}</> : null}
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col space-y-1.5">
+                                        <button className="text-xs text-primary underline"
+                                                onClick={() => {
+                                                    setEditingDay(day);
+                                                    setIsEditing(true);
+                                                }}>
+                                            Update
+                                        </button>
+                                        <button className="text-xs text-red-600 underline"
+                                                onClick={() => deleteDay(day.id)}>
+                                            Delete
+                                        </button>
                                     </div>
                                 </div>
-                                <button className="text-xs text-red-600 underline" onClick={() => deleteDay(day.id)}>
-                                    Delete
-                                </button>
-                            </div>
-                            {day.exercises?.length > 0 && (
-                                <WorkoutDayCard exercises={day.exercises}/>
-                            )}
-                        </Card>
-                    ))}
+
+                                {!editingDay && !editing && day.exercises?.length > 0 && (
+                                    <WorkoutDayCard workoutDay={day}/>
+                                )}
+
+                                {editingDay && editing && (
+                                    <UpdateWorkoutDay
+                                        workoutDay={editingDay}
+                                        onSaved={saved => {
+                                            setDays(prev =>
+                                                prev.map(d => (d.id === saved.id ? saved : d))
+                                            );
+                                            setEditingDay(null);
+                                            setIsEditing(false)
+                                        }}
+                                        onCancel={() => {
+                                            setEditingDay(null);
+                                            setIsEditing(false);
+                                        }}
+                                    />
+                                )}
+
+                            </Card>
+                        )
+                    })}
                 </div>
             </Card>
         </div>

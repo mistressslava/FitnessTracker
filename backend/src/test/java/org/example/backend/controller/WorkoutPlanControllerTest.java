@@ -1,5 +1,6 @@
 package org.example.backend.controller;
 
+import org.example.backend.model.*;
 import org.example.backend.repo.WorkoutPlanRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import java.time.DayOfWeek;
+import java.util.List;
+import java.util.Set;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,7 +47,7 @@ class WorkoutPlanControllerTest {
                 .andExpect(content().json(
                         """
                                 [
-
+                                
                                 ]
                                 """
                 ));
@@ -53,229 +58,630 @@ class WorkoutPlanControllerTest {
     void addNewWorkoutPLan_shouldCreateWorkoutPlan_whenCalled() throws Exception {
 
         mockMvc.perform(post("/api/workout-plans")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                        """
-                        {
-                            "title": "Full Week Strength Plan",
-                            "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
-                            "days": [
-                              {
-                                "id": "day-1",
-                                "day": "MONDAY",
-                                "type": "UPPER_BODY",
-                                "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
-                                "exercises": [
-                                  {
-                                    "id": "ex-1",
-                                    "name": "Bench Press",
-                                    "sets": 4,
-                                    "reps": 8,
-                                    "muscleGroup": "CHEST"
-                                  },
-                                  {
-                                    "id": "ex-2",
-                                    "name": "Pull-Ups",
-                                    "sets": 3,
-                                    "reps": 10,
-                                    "muscleGroup": "BACK"
-                                  }
-                                ]
-                              },
-                              {
-                                "id": "day-2",
-                                "day": "TUESDAY",
-                                "type": "LOWER_BODY",
-                                "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
-                                "exercises": [
-                                  {
-                                    "id": "ex-3",
-                                    "name": "Squats",
-                                    "sets": 4,
-                                    "reps": 10,
-                                    "muscleGroup": "LEGS"
-                                  },
-                                  {
-                                    "id": "ex-4",
-                                    "name": "Lunges",
-                                    "sets": 3,
-                                    "reps": 12,
-                                    "muscleGroup": "GLUTES"
-                                  }
-                                ]
-                              },
-                              {
-                                "id": "day-3",
-                                "day": "WEDNESDAY",
-                                "type": "FULL_BODY",
-                                "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
-                                "exercises": [
-                                  {
-                                    "id": "ex-5",
-                                    "name": "Push-Ups",
-                                    "sets": 3,
-                                    "reps": 15,
-                                    "muscleGroup": "CHEST"
-                                  },
-                                  {
-                                    "id": "ex-6",
-                                    "name": "Plank",
-                                    "sets": 3,
-                                    "reps": 60,
-                                    "muscleGroup": "CORE"
-                                  },
-                                  {
-                                    "id": "ex-7",
-                                    "name": "Jump Rope",
-                                    "sets": 5,
-                                    "reps": 100,
-                                    "muscleGroup": "CARDIO"
-                                  }
-                                ]
-                              },
-                              {
-                                "id": "day-4",
-                                "day": "THURSDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              },
-                              {
-                                "id": "day-5",
-                                "day": "FRIDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              },
-                              {
-                                "id": "day-6",
-                                "day": "SATURDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              },
-                              {
-                                "id": "day-7",
-                                "day": "SUNDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              }
-                            ]
-                        }
-                        """
-                ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                        {
+                                            "title": "Full Week Strength Plan",
+                                            "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+                                            "days": [
+                                              {
+                                                "id": "day-1",
+                                                "day": "MONDAY",
+                                                "type": "UPPER_BODY",
+                                                "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-1",
+                                                    "name": "Bench Press",
+                                                    "sets": 4,
+                                                    "reps": 8,
+                                                    "muscleGroup": "CHEST"
+                                                  },
+                                                  {
+                                                    "id": "ex-2",
+                                                    "name": "Pull-Ups",
+                                                    "sets": 3,
+                                                    "reps": 10,
+                                                    "muscleGroup": "BACK"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-2",
+                                                "day": "TUESDAY",
+                                                "type": "LOWER_BODY",
+                                                "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-3",
+                                                    "name": "Squats",
+                                                    "sets": 4,
+                                                    "reps": 10,
+                                                    "muscleGroup": "LEGS"
+                                                  },
+                                                  {
+                                                    "id": "ex-4",
+                                                    "name": "Lunges",
+                                                    "sets": 3,
+                                                    "reps": 12,
+                                                    "muscleGroup": "GLUTES"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-3",
+                                                "day": "WEDNESDAY",
+                                                "type": "FULL_BODY",
+                                                "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-5",
+                                                    "name": "Push-Ups",
+                                                    "sets": 3,
+                                                    "reps": 15,
+                                                    "muscleGroup": "CHEST"
+                                                  },
+                                                  {
+                                                    "id": "ex-6",
+                                                    "name": "Plank",
+                                                    "sets": 3,
+                                                    "reps": 60,
+                                                    "muscleGroup": "CORE"
+                                                  },
+                                                  {
+                                                    "id": "ex-7",
+                                                    "name": "Jump Rope",
+                                                    "sets": 5,
+                                                    "reps": 100,
+                                                    "muscleGroup": "CARDIO"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-4",
+                                                "day": "THURSDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-5",
+                                                "day": "FRIDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-6",
+                                                "day": "SATURDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-7",
+                                                "day": "SUNDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              }
+                                            ]
+                                        }
+                                        """
+                        ))
                 .andExpect(status().isOk())
                 .andExpect(content().json(
                         """
-                        {
-                            "title": "Full Week Strength Plan",
-                            "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
-                            "days": [
-                              {
-                                "id": "day-1",
-                                "day": "MONDAY",
-                                "type": "UPPER_BODY",
-                                "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
-                                "exercises": [
-                                  {
-                                    "id": "ex-1",
-                                    "name": "Bench Press",
-                                    "sets": 4,
-                                    "reps": 8,
-                                    "muscleGroup": "CHEST"
-                                  },
-                                  {
-                                    "id": "ex-2",
-                                    "name": "Pull-Ups",
-                                    "sets": 3,
-                                    "reps": 10,
-                                    "muscleGroup": "BACK"
-                                  }
-                                ]
-                              },
-                              {
-                                "id": "day-2",
-                                "day": "TUESDAY",
-                                "type": "LOWER_BODY",
-                                "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
-                                "exercises": [
-                                  {
-                                    "id": "ex-3",
-                                    "name": "Squats",
-                                    "sets": 4,
-                                    "reps": 10,
-                                    "muscleGroup": "LEGS"
-                                  },
-                                  {
-                                    "id": "ex-4",
-                                    "name": "Lunges",
-                                    "sets": 3,
-                                    "reps": 12,
-                                    "muscleGroup": "GLUTES"
-                                  }
-                                ]
-                              },
-                              {
-                                "id": "day-3",
-                                "day": "WEDNESDAY",
-                                "type": "FULL_BODY",
-                                "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
-                                "exercises": [
-                                  {
-                                    "id": "ex-5",
-                                    "name": "Push-Ups",
-                                    "sets": 3,
-                                    "reps": 15,
-                                    "muscleGroup": "CHEST"
-                                  },
-                                  {
-                                    "id": "ex-6",
-                                    "name": "Plank",
-                                    "sets": 3,
-                                    "reps": 60,
-                                    "muscleGroup": "CORE"
-                                  },
-                                  {
-                                    "id": "ex-7",
-                                    "name": "Jump Rope",
-                                    "sets": 5,
-                                    "reps": 100,
-                                    "muscleGroup": "CARDIO"
-                                  }
-                                ]
-                              },
-                              {
-                                "id": "day-4",
-                                "day": "THURSDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              },
-                              {
-                                "id": "day-5",
-                                "day": "FRIDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              },
-                              {
-                                "id": "day-6",
-                                "day": "SATURDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              },
-                              {
-                                "id": "day-7",
-                                "day": "SUNDAY",
-                                "type": "REST",
-                                "targetMuscles": [],
-                                "exercises": []
-                              }
-                            ]
-                        }
-                        """
+                                {
+                                    "title": "Full Week Strength Plan",
+                                    "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+                                    "days": [
+                                      {
+                                        "id": "day-1",
+                                        "day": "MONDAY",
+                                        "type": "UPPER_BODY",
+                                        "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
+                                        "exercises": [
+                                          {
+                                            "id": "ex-1",
+                                            "name": "Bench Press",
+                                            "sets": 4,
+                                            "reps": 8,
+                                            "muscleGroup": "CHEST"
+                                          },
+                                          {
+                                            "id": "ex-2",
+                                            "name": "Pull-Ups",
+                                            "sets": 3,
+                                            "reps": 10,
+                                            "muscleGroup": "BACK"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "day-2",
+                                        "day": "TUESDAY",
+                                        "type": "LOWER_BODY",
+                                        "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
+                                        "exercises": [
+                                          {
+                                            "id": "ex-3",
+                                            "name": "Squats",
+                                            "sets": 4,
+                                            "reps": 10,
+                                            "muscleGroup": "LEGS"
+                                          },
+                                          {
+                                            "id": "ex-4",
+                                            "name": "Lunges",
+                                            "sets": 3,
+                                            "reps": 12,
+                                            "muscleGroup": "GLUTES"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "day-3",
+                                        "day": "WEDNESDAY",
+                                        "type": "FULL_BODY",
+                                        "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
+                                        "exercises": [
+                                          {
+                                            "id": "ex-5",
+                                            "name": "Push-Ups",
+                                            "sets": 3,
+                                            "reps": 15,
+                                            "muscleGroup": "CHEST"
+                                          },
+                                          {
+                                            "id": "ex-6",
+                                            "name": "Plank",
+                                            "sets": 3,
+                                            "reps": 60,
+                                            "muscleGroup": "CORE"
+                                          },
+                                          {
+                                            "id": "ex-7",
+                                            "name": "Jump Rope",
+                                            "sets": 5,
+                                            "reps": 100,
+                                            "muscleGroup": "CARDIO"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "day-4",
+                                        "day": "THURSDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      },
+                                      {
+                                        "id": "day-5",
+                                        "day": "FRIDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      },
+                                      {
+                                        "id": "day-6",
+                                        "day": "SATURDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      },
+                                      {
+                                        "id": "day-7",
+                                        "day": "SUNDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      }
+                                    ]
+                                }
+                                """
                 ));
+    }
+
+    @Test
+    @DirtiesContext
+    void updateWorkoutPlanById_shouldThrowException() throws Exception {
+        //GIVEN
+
+        //WHEN
+        mockMvc.perform(put("/api/workout-plans/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                        {
+                                            "title": "Full Week Strength Plan",
+                                            "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+                                            "days": [
+                                              {
+                                                "id": "day-1",
+                                                "day": "MONDAY",
+                                                "type": "UPPER_BODY",
+                                                "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-1",
+                                                    "name": "Bench Press",
+                                                    "sets": 4,
+                                                    "reps": 8,
+                                                    "muscleGroup": "CHEST"
+                                                  },
+                                                  {
+                                                    "id": "ex-2",
+                                                    "name": "Pull-Ups",
+                                                    "sets": 3,
+                                                    "reps": 10,
+                                                    "muscleGroup": "BACK"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-2",
+                                                "day": "TUESDAY",
+                                                "type": "LOWER_BODY",
+                                                "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-3",
+                                                    "name": "Squats",
+                                                    "sets": 4,
+                                                    "reps": 10,
+                                                    "muscleGroup": "LEGS"
+                                                  },
+                                                  {
+                                                    "id": "ex-4",
+                                                    "name": "Lunges",
+                                                    "sets": 3,
+                                                    "reps": 12,
+                                                    "muscleGroup": "GLUTES"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-3",
+                                                "day": "WEDNESDAY",
+                                                "type": "FULL_BODY",
+                                                "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-5",
+                                                    "name": "Push-Ups",
+                                                    "sets": 3,
+                                                    "reps": 15,
+                                                    "muscleGroup": "CHEST"
+                                                  },
+                                                  {
+                                                    "id": "ex-6",
+                                                    "name": "Plank",
+                                                    "sets": 3,
+                                                    "reps": 60,
+                                                    "muscleGroup": "CORE"
+                                                  },
+                                                  {
+                                                    "id": "ex-7",
+                                                    "name": "Jump Rope",
+                                                    "sets": 5,
+                                                    "reps": 100,
+                                                    "muscleGroup": "CARDIO"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-4",
+                                                "day": "THURSDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-5",
+                                                "day": "FRIDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-6",
+                                                "day": "SATURDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-7",
+                                                "day": "SUNDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              }
+                                            ]
+                                        }
+                                        """
+                        ))
+                //THEN
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DirtiesContext
+    void updateWorkoutPlanById_shouldUpdateWorkoutPlan() throws Exception {
+        //GIVEN
+        WorkoutPlan plan = new WorkoutPlan(
+                "1",
+                "Full Week Strength Plan",
+                "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+                List.of(
+                        new WorkoutDay(
+                                "day-1",
+                                DayOfWeek.MONDAY,
+                                WorkoutDayType.UPPER_BODY,
+                                Set.of(MuscleGroup.CHEST, MuscleGroup.BACK, MuscleGroup.SHOULDERS, MuscleGroup.ARMS),
+                                List.of(
+                                        new Exercise("ex-1", "Bench Press", 4, 8, MuscleGroup.CHEST),
+                                        new Exercise("ex-2", "Pull-Ups", 3, 10, MuscleGroup.BACK)
+                                )
+                        ),
+                        new WorkoutDay(
+                                "day-2",
+                                DayOfWeek.TUESDAY,
+                                WorkoutDayType.LOWER_BODY,
+                                Set.of(MuscleGroup.LEGS, MuscleGroup.GLUTES, MuscleGroup.CALVES),
+                                List.of(
+                                        new Exercise("ex-3", "Squats", 4, 10, MuscleGroup.LEGS),
+                                        new Exercise("ex-4", "Lunges", 3, 12, MuscleGroup.GLUTES)
+                                )
+                        ),
+                        new WorkoutDay(
+                                "day-3",
+                                DayOfWeek.WEDNESDAY,
+                                WorkoutDayType.FULL_BODY,
+                                Set.of(MuscleGroup.CHEST, MuscleGroup.BACK, MuscleGroup.CORE, MuscleGroup.CARDIO),
+                                List.of(
+                                        new Exercise("ex-5", "Push-Ups", 3, 15, MuscleGroup.CHEST),
+                                        new Exercise("ex-6", "Plank", 3, 60, MuscleGroup.CORE),
+                                        new Exercise("ex-7", "Jump Rope", 5, 100, MuscleGroup.CARDIO)
+                                )
+                        ),
+                        new WorkoutDay("day-4", DayOfWeek.THURSDAY, WorkoutDayType.REST, Set.of(), List.of()),
+                        new WorkoutDay("day-5", DayOfWeek.FRIDAY, WorkoutDayType.REST, Set.of(), List.of()),
+                        new WorkoutDay("day-6", DayOfWeek.SATURDAY, WorkoutDayType.REST, Set.of(), List.of()),
+                        new WorkoutDay("day-7", DayOfWeek.SUNDAY, WorkoutDayType.REST, Set.of(), List.of())
+                )
+        );
+        workoutPlanRepo.save(plan);
+
+        //WHEN
+        mockMvc.perform(put("/api/workout-plans/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                        {
+                                            "id": "1",
+                                            "title": "Updated Full Week",
+                                            "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+                                            "days": [
+                                              {
+                                                "id": "day-1",
+                                                "day": "MONDAY",
+                                                "type": "UPPER_BODY",
+                                                "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-1",
+                                                    "name": "Bench Press",
+                                                    "sets": 4,
+                                                    "reps": 8,
+                                                    "muscleGroup": "CHEST"
+                                                  },
+                                                  {
+                                                    "id": "ex-2",
+                                                    "name": "Pull-Ups",
+                                                    "sets": 3,
+                                                    "reps": 10,
+                                                    "muscleGroup": "BACK"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-2",
+                                                "day": "TUESDAY",
+                                                "type": "LOWER_BODY",
+                                                "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-3",
+                                                    "name": "Squats",
+                                                    "sets": 4,
+                                                    "reps": 10,
+                                                    "muscleGroup": "LEGS"
+                                                  },
+                                                  {
+                                                    "id": "ex-4",
+                                                    "name": "Lunges",
+                                                    "sets": 3,
+                                                    "reps": 12,
+                                                    "muscleGroup": "GLUTES"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-3",
+                                                "day": "WEDNESDAY",
+                                                "type": "FULL_BODY",
+                                                "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
+                                                "exercises": [
+                                                  {
+                                                    "id": "ex-5",
+                                                    "name": "Push-Ups",
+                                                    "sets": 3,
+                                                    "reps": 15,
+                                                    "muscleGroup": "CHEST"
+                                                  },
+                                                  {
+                                                    "id": "ex-6",
+                                                    "name": "Plank",
+                                                    "sets": 3,
+                                                    "reps": 60,
+                                                    "muscleGroup": "CORE"
+                                                  },
+                                                  {
+                                                    "id": "ex-7",
+                                                    "name": "Jump Rope",
+                                                    "sets": 5,
+                                                    "reps": 100,
+                                                    "muscleGroup": "CARDIO"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "day-4",
+                                                "day": "THURSDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-5",
+                                                "day": "FRIDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-6",
+                                                "day": "SATURDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              },
+                                              {
+                                                "id": "day-7",
+                                                "day": "SUNDAY",
+                                                "type": "REST",
+                                                "targetMuscles": [],
+                                                "exercises": []
+                                              }
+                                            ]
+                                        }
+                                        """
+                        ))
+                //THEN
+                .andExpect(content().json(
+                        """
+                                {
+                                    "id": "1",
+                                    "title": "Updated Full Week",
+                                    "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
+                                    "days": [
+                                      {
+                                        "id": "day-1",
+                                        "day": "MONDAY",
+                                        "type": "UPPER_BODY",
+                                        "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
+                                        "exercises": [
+                                          {
+                                            "id": "ex-1",
+                                            "name": "Bench Press",
+                                            "sets": 4,
+                                            "reps": 8,
+                                            "muscleGroup": "CHEST"
+                                          },
+                                          {
+                                            "id": "ex-2",
+                                            "name": "Pull-Ups",
+                                            "sets": 3,
+                                            "reps": 10,
+                                            "muscleGroup": "BACK"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "day-2",
+                                        "day": "TUESDAY",
+                                        "type": "LOWER_BODY",
+                                        "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
+                                        "exercises": [
+                                          {
+                                            "id": "ex-3",
+                                            "name": "Squats",
+                                            "sets": 4,
+                                            "reps": 10,
+                                            "muscleGroup": "LEGS"
+                                          },
+                                          {
+                                            "id": "ex-4",
+                                            "name": "Lunges",
+                                            "sets": 3,
+                                            "reps": 12,
+                                            "muscleGroup": "GLUTES"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "day-3",
+                                        "day": "WEDNESDAY",
+                                        "type": "FULL_BODY",
+                                        "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
+                                        "exercises": [
+                                          {
+                                            "id": "ex-5",
+                                            "name": "Push-Ups",
+                                            "sets": 3,
+                                            "reps": 15,
+                                            "muscleGroup": "CHEST"
+                                          },
+                                          {
+                                            "id": "ex-6",
+                                            "name": "Plank",
+                                            "sets": 3,
+                                            "reps": 60,
+                                            "muscleGroup": "CORE"
+                                          },
+                                          {
+                                            "id": "ex-7",
+                                            "name": "Jump Rope",
+                                            "sets": 5,
+                                            "reps": 100,
+                                            "muscleGroup": "CARDIO"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "day-4",
+                                        "day": "THURSDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      },
+                                      {
+                                        "id": "day-5",
+                                        "day": "FRIDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      },
+                                      {
+                                        "id": "day-6",
+                                        "day": "SATURDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      },
+                                      {
+                                        "id": "day-7",
+                                        "day": "SUNDAY",
+                                        "type": "REST",
+                                        "targetMuscles": [],
+                                        "exercises": []
+                                      }
+                                    ]
+                                }
+                                """))
+                .andExpect(status().isOk());
     }
 }

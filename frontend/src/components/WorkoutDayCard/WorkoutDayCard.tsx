@@ -1,8 +1,8 @@
-import type {Exercise} from "@/types/Exercise.ts";
 import {CardContent} from "@/components/ui/card.tsx";
+import type {WorkoutDay} from "@/types/WorkoutDay.ts";
 
 type ExerciseListProps = {
-    exercises: Exercise[];
+    workoutDay: WorkoutDay,
     isRestDay?: boolean;
 }
 
@@ -16,12 +16,13 @@ export default function WorkoutDayCard(props: Readonly<ExerciseListProps>) {
         )
     }
 
-    if(!props.exercises?.length) return null;
+    if (!props.workoutDay.exercises?.length) return null;
 
     return (
         <CardContent className="pt-4">
             <div className="space-y-4">
-                {props.exercises.map(exercise => (
+
+                {props.workoutDay.exercises.map(exercise => (
                     <div
                         key={exercise.id}
                         className="flex items-start justify-between gap-4 pb-4 border-b last:border-b-0 last:pb-0"
@@ -31,7 +32,6 @@ export default function WorkoutDayCard(props: Readonly<ExerciseListProps>) {
                                 {exercise.name}
                             </h3>
                         </div>
-
                         {exercise.sets > 0 && exercise.reps > 0 && (
                             <div className="flex gap-3 text-sm text-muted-foreground shrink-0">
                                 <div className="text-center">
@@ -50,4 +50,5 @@ export default function WorkoutDayCard(props: Readonly<ExerciseListProps>) {
             </div>
         </CardContent>
     )
+
 }

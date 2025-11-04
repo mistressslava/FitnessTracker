@@ -139,4 +139,30 @@ class ExerciseServiceTest {
 
         verifyNoMoreInteractions(exerciseRepo);
     }
+
+    @Test
+    void getExerciseById_shouldReturnExercise_whenGiven() {
+        //GIVEN
+        Exercise expected = new Exercise("1", "exercise1", 4, 12, MuscleGroup.ARMS);
+        exerciseRepo.save(expected);
+
+        when(exerciseRepo.findById("1")).thenReturn(Optional.of(expected));
+        //WHEN
+        Exercise actual = exerciseService.getExerciseById("1");
+        //THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getExerciseById_shouldTrowException_whenNoId() {
+        //GIVEN
+        when(exerciseRepo.findById("1")).thenReturn(Optional.empty());
+        //WHEN //THEN
+        assertThrows(NoSuchElementException.class,
+                () -> exerciseService.getExerciseById("1"));
+
+        verify(exerciseRepo).findById("1");
+
+        verifyNoMoreInteractions(exerciseRepo);
+    }
 }

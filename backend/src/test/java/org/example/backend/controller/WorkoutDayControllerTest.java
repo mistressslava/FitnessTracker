@@ -123,4 +123,80 @@ class WorkoutDayControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Exercise with id 1 not found"));
     }
+
+    @Test
+    @DirtiesContext
+    void updateWorkoutDayById_shouldUpdateWorkoutDay() throws Exception {
+        //GIVEN
+        Exercise exercise = new Exercise("1", "Bench Press", 3, 10, MuscleGroup.CHEST);
+        WorkoutDay expected = new WorkoutDay(
+                "1",
+                DayOfWeek.MONDAY,
+                WorkoutDayType.UPPER_BODY,
+                Set.of(MuscleGroup.CHEST),
+                List.of(exercise));
+        workoutDayRepo.save(expected);
+
+        //WHEN
+        mockMvc.perform(put("/api/workout-days/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                         {
+                            "day": "MONDAY",
+                            "type": "UPPER_BODY",
+                            "targetMuscles": ["CHEST"],
+                            "exercises": [
+                              {
+                                "name": "Bench Press",
+                                "sets": 4,
+                                "reps": 12,
+                                "muscleGroup": "CHEST"
+                              }
+                            ]
+                          }
+                         """))
+                //THEN
+                .andExpect(content().json("""
+                        {
+                            "day": "MONDAY",
+                            "type": "UPPER_BODY",
+                            "targetMuscles": ["CHEST"],
+                            "exercises": [
+                              {
+                                "name": "Bench Press",
+                                "sets": 4,
+                                "reps": 12,
+                                "muscleGroup": "CHEST"
+                              }
+                            ]
+                          }
+                        """))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DirtiesContext
+    void updateWorkoutDayById_shouldThrowException_whenIdNotFound() throws Exception {
+        //WHEN
+        mockMvc.perform(put("/api/workout-days/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "day": "MONDAY",
+                            "type": "UPPER_BODY",
+                            "targetMuscles": ["CHEST"],
+                            "exercises": [
+                              {
+                                "name": "Bench Press",
+                                "sets": 4,
+                                "reps": 12,
+                                "muscleGroup": "CHEST"
+                              }
+                            ]
+                          }
+                        """))
+                //THEN
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Workout day with id 1 not found"));
+    }
 }
