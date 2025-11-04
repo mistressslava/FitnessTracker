@@ -8,12 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class WorkoutPlanServiceTest {
@@ -85,5 +82,62 @@ class WorkoutPlanServiceTest {
         verify(idService).randomId();
         assertEquals(expected, actual);
 
+    }
+
+    @Test
+    void updateWorkoutPlanById_shouldThrowException() {
+        //GIVEN
+        List<WorkoutDay> days = List.of(
+                new WorkoutDay("1", DayOfWeek.MONDAY,    WorkoutDayType.REST,       Set.of(), List.of()),
+                new WorkoutDay("2", DayOfWeek.TUESDAY,   WorkoutDayType.UPPER_BODY, Set.of(MuscleGroup.BACK),
+                        List.of(new Exercise("ex-1", "Row", 4, 10, MuscleGroup.BACK))),
+                new WorkoutDay("3", DayOfWeek.WEDNESDAY, WorkoutDayType.REST,       Set.of(), List.of()),
+                new WorkoutDay("4", DayOfWeek.THURSDAY,  WorkoutDayType.LOWER_BODY, Set.of(MuscleGroup.LEGS),
+                        List.of(new Exercise("ex-2", "Squat", 5, 5, MuscleGroup.LEGS))),
+                new WorkoutDay("5", DayOfWeek.FRIDAY,    WorkoutDayType.REST,       Set.of(), List.of()),
+                new WorkoutDay("6", DayOfWeek.SATURDAY,  WorkoutDayType.FULL_BODY,  Set.of(MuscleGroup.CORE),
+                        List.of(new Exercise("ex-3", "Plank", 3, 60, MuscleGroup.CORE))),
+                new WorkoutDay("7", DayOfWeek.SUNDAY,    WorkoutDayType.REST,       Set.of(), List.of())
+        );
+
+        WorkoutPlanDto updated = new WorkoutPlanDto( "Test description", "Weekly Split", days);
+        when(workoutPlanRepo.findById("1")).thenReturn(Optional.empty());
+        //WHEN //THEN
+        assertThrows(NoSuchElementException.class,
+                () -> workoutPlanService.updateWorkoutPlanById("1", updated));
+
+        verify(workoutPlanRepo).findById("1");
+        verifyNoMoreInteractions(workoutPlanRepo);
+    }
+
+    @Test
+    void updateWorkoutPlanById_shouldUpdateWorkoutPlan() {
+        //GIVEN
+        List<WorkoutDay> days = List.of(
+                new WorkoutDay("1", DayOfWeek.MONDAY,    WorkoutDayType.REST,       Set.of(), List.of()),
+                new WorkoutDay("2", DayOfWeek.TUESDAY,   WorkoutDayType.UPPER_BODY, Set.of(MuscleGroup.BACK),
+                        List.of(new Exercise("ex-1", "Row", 4, 10, MuscleGroup.BACK))),
+                new WorkoutDay("3", DayOfWeek.WEDNESDAY, WorkoutDayType.REST,       Set.of(), List.of()),
+                new WorkoutDay("4", DayOfWeek.THURSDAY,  WorkoutDayType.LOWER_BODY, Set.of(MuscleGroup.LEGS),
+                        List.of(new Exercise("ex-2", "Squat", 5, 5, MuscleGroup.LEGS))),
+                new WorkoutDay("5", DayOfWeek.FRIDAY,    WorkoutDayType.REST,       Set.of(), List.of()),
+                new WorkoutDay("6", DayOfWeek.SATURDAY,  WorkoutDayType.FULL_BODY,  Set.of(MuscleGroup.CORE),
+                        List.of(new Exercise("ex-3", "Plank", 3, 60, MuscleGroup.CORE))),
+                new WorkoutDay("7", DayOfWeek.SUNDAY,    WorkoutDayType.REST,       Set.of(), List.of())
+        );
+
+        WorkoutPlan plan = new WorkoutPlan("1", "Test description", "Weekly Split", days);
+        WorkoutPlanDto updated = new WorkoutPlanDto("Updated description", "Weekly Split", days);
+
+        when(workoutPlanRepo.findById("1")).thenReturn(Optional.of(plan));
+        when(workoutPlanRepo.save(any(WorkoutPlan.class))).thenAnswer(i -> i.getArgument(0));
+        //WHEN
+        WorkoutPlan actual = workoutPlanService.updateWorkoutPlanById("1", updated);
+        //THEN
+        assertEquals("1", actual.id());
+        assertEquals("Updated description", actual.title());
+        verify(workoutPlanRepo).findById("1");
+        verify(workoutPlanRepo).save(any(WorkoutPlan.class));
+        verifyNoMoreInteractions(workoutPlanRepo);
     }
 }
