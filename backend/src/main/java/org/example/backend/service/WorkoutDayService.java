@@ -35,7 +35,7 @@ public class WorkoutDayService {
 
     public WorkoutDay updateWorkoutDayById(String id, WorkoutDayDto workoutDayDto) {
         WorkoutDay existing = workoutDayRepo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Exercise with id " + id + " not found"));
+                .orElseThrow(() -> new NoSuchElementException("Workout day with id " + id + " not found"));
 
         WorkoutDay updated = new WorkoutDay(
                 existing.id(),
