@@ -66,20 +66,17 @@ class WorkoutPlanControllerTest {
                                             "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
                                             "days": [
                                               {
-                                                "id": "day-1",
                                                 "day": "MONDAY",
                                                 "type": "UPPER_BODY",
                                                 "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
                                                 "exercises": [
                                                   {
-                                                    "id": "ex-1",
                                                     "name": "Bench Press",
                                                     "sets": 4,
                                                     "reps": 8,
                                                     "muscleGroup": "CHEST"
                                                   },
                                                   {
-                                                    "id": "ex-2",
                                                     "name": "Pull-Ups",
                                                     "sets": 3,
                                                     "reps": 10,
@@ -88,20 +85,17 @@ class WorkoutPlanControllerTest {
                                                 ]
                                               },
                                               {
-                                                "id": "day-2",
                                                 "day": "TUESDAY",
                                                 "type": "LOWER_BODY",
                                                 "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
                                                 "exercises": [
                                                   {
-                                                    "id": "ex-3",
                                                     "name": "Squats",
                                                     "sets": 4,
                                                     "reps": 10,
                                                     "muscleGroup": "LEGS"
                                                   },
                                                   {
-                                                    "id": "ex-4",
                                                     "name": "Lunges",
                                                     "sets": 3,
                                                     "reps": 12,
@@ -110,27 +104,23 @@ class WorkoutPlanControllerTest {
                                                 ]
                                               },
                                               {
-                                                "id": "day-3",
                                                 "day": "WEDNESDAY",
                                                 "type": "FULL_BODY",
                                                 "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
                                                 "exercises": [
                                                   {
-                                                    "id": "ex-5",
                                                     "name": "Push-Ups",
                                                     "sets": 3,
                                                     "reps": 15,
                                                     "muscleGroup": "CHEST"
                                                   },
                                                   {
-                                                    "id": "ex-6",
                                                     "name": "Plank",
                                                     "sets": 3,
                                                     "reps": 60,
                                                     "muscleGroup": "CORE"
                                                   },
                                                   {
-                                                    "id": "ex-7",
                                                     "name": "Jump Rope",
                                                     "sets": 5,
                                                     "reps": 100,
@@ -139,28 +129,24 @@ class WorkoutPlanControllerTest {
                                                 ]
                                               },
                                               {
-                                                "id": "day-4",
                                                 "day": "THURSDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
                                                 "exercises": []
                                               },
                                               {
-                                                "id": "day-5",
                                                 "day": "FRIDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
                                                 "exercises": []
                                               },
                                               {
-                                                "id": "day-6",
                                                 "day": "SATURDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
                                                 "exercises": []
                                               },
                                               {
-                                                "id": "day-7",
                                                 "day": "SUNDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
@@ -170,7 +156,7 @@ class WorkoutPlanControllerTest {
                                         }
                                         """
                         ))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().json(
                         """
                                 {
@@ -178,20 +164,17 @@ class WorkoutPlanControllerTest {
                                     "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
                                     "days": [
                                       {
-                                        "id": "day-1",
                                         "day": "MONDAY",
                                         "type": "UPPER_BODY",
                                         "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
                                         "exercises": [
                                           {
-                                            "id": "ex-1",
                                             "name": "Bench Press",
                                             "sets": 4,
                                             "reps": 8,
                                             "muscleGroup": "CHEST"
                                           },
                                           {
-                                            "id": "ex-2",
                                             "name": "Pull-Ups",
                                             "sets": 3,
                                             "reps": 10,
@@ -200,20 +183,17 @@ class WorkoutPlanControllerTest {
                                         ]
                                       },
                                       {
-                                        "id": "day-2",
                                         "day": "TUESDAY",
                                         "type": "LOWER_BODY",
                                         "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
                                         "exercises": [
                                           {
-                                            "id": "ex-3",
                                             "name": "Squats",
                                             "sets": 4,
                                             "reps": 10,
                                             "muscleGroup": "LEGS"
                                           },
                                           {
-                                            "id": "ex-4",
                                             "name": "Lunges",
                                             "sets": 3,
                                             "reps": 12,
@@ -222,27 +202,23 @@ class WorkoutPlanControllerTest {
                                         ]
                                       },
                                       {
-                                        "id": "day-3",
                                         "day": "WEDNESDAY",
                                         "type": "FULL_BODY",
                                         "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
                                         "exercises": [
                                           {
-                                            "id": "ex-5",
                                             "name": "Push-Ups",
                                             "sets": 3,
                                             "reps": 15,
                                             "muscleGroup": "CHEST"
                                           },
                                           {
-                                            "id": "ex-6",
                                             "name": "Plank",
                                             "sets": 3,
                                             "reps": 60,
                                             "muscleGroup": "CORE"
                                           },
                                           {
-                                            "id": "ex-7",
                                             "name": "Jump Rope",
                                             "sets": 5,
                                             "reps": 100,
@@ -251,28 +227,24 @@ class WorkoutPlanControllerTest {
                                         ]
                                       },
                                       {
-                                        "id": "day-4",
                                         "day": "THURSDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
                                         "exercises": []
                                       },
                                       {
-                                        "id": "day-5",
                                         "day": "FRIDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
                                         "exercises": []
                                       },
                                       {
-                                        "id": "day-6",
                                         "day": "SATURDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
                                         "exercises": []
                                       },
                                       {
-                                        "id": "day-7",
                                         "day": "SUNDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
@@ -461,25 +433,21 @@ class WorkoutPlanControllerTest {
                         .content(
                                 """
                                         {
-                                            "id": "1",
                                             "title": "Updated Full Week",
                                             "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
                                             "days": [
                                               {
-                                                "id": "day-1",
                                                 "day": "MONDAY",
                                                 "type": "UPPER_BODY",
                                                 "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
                                                 "exercises": [
                                                   {
-                                                    "id": "ex-1",
                                                     "name": "Bench Press",
                                                     "sets": 4,
                                                     "reps": 8,
                                                     "muscleGroup": "CHEST"
                                                   },
                                                   {
-                                                    "id": "ex-2",
                                                     "name": "Pull-Ups",
                                                     "sets": 3,
                                                     "reps": 10,
@@ -488,20 +456,17 @@ class WorkoutPlanControllerTest {
                                                 ]
                                               },
                                               {
-                                                "id": "day-2",
                                                 "day": "TUESDAY",
                                                 "type": "LOWER_BODY",
                                                 "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
                                                 "exercises": [
                                                   {
-                                                    "id": "ex-3",
                                                     "name": "Squats",
                                                     "sets": 4,
                                                     "reps": 10,
                                                     "muscleGroup": "LEGS"
                                                   },
                                                   {
-                                                    "id": "ex-4",
                                                     "name": "Lunges",
                                                     "sets": 3,
                                                     "reps": 12,
@@ -510,27 +475,23 @@ class WorkoutPlanControllerTest {
                                                 ]
                                               },
                                               {
-                                                "id": "day-3",
                                                 "day": "WEDNESDAY",
                                                 "type": "FULL_BODY",
                                                 "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
                                                 "exercises": [
                                                   {
-                                                    "id": "ex-5",
                                                     "name": "Push-Ups",
                                                     "sets": 3,
                                                     "reps": 15,
                                                     "muscleGroup": "CHEST"
                                                   },
                                                   {
-                                                    "id": "ex-6",
                                                     "name": "Plank",
                                                     "sets": 3,
                                                     "reps": 60,
                                                     "muscleGroup": "CORE"
                                                   },
                                                   {
-                                                    "id": "ex-7",
                                                     "name": "Jump Rope",
                                                     "sets": 5,
                                                     "reps": 100,
@@ -539,28 +500,24 @@ class WorkoutPlanControllerTest {
                                                 ]
                                               },
                                               {
-                                                "id": "day-4",
                                                 "day": "THURSDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
                                                 "exercises": []
                                               },
                                               {
-                                                "id": "day-5",
                                                 "day": "FRIDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
                                                 "exercises": []
                                               },
                                               {
-                                                "id": "day-6",
                                                 "day": "SATURDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
                                                 "exercises": []
                                               },
                                               {
-                                                "id": "day-7",
                                                 "day": "SUNDAY",
                                                 "type": "REST",
                                                 "targetMuscles": [],
@@ -574,25 +531,21 @@ class WorkoutPlanControllerTest {
                 .andExpect(content().json(
                         """
                                 {
-                                    "id": "1",
                                     "title": "Updated Full Week",
                                     "description": "Balanced weekly plan focusing on both upper and lower body strength with core stability.",
                                     "days": [
                                       {
-                                        "id": "day-1",
                                         "day": "MONDAY",
                                         "type": "UPPER_BODY",
                                         "targetMuscles": ["CHEST", "BACK", "SHOULDERS", "ARMS"],
                                         "exercises": [
                                           {
-                                            "id": "ex-1",
                                             "name": "Bench Press",
                                             "sets": 4,
                                             "reps": 8,
                                             "muscleGroup": "CHEST"
                                           },
                                           {
-                                            "id": "ex-2",
                                             "name": "Pull-Ups",
                                             "sets": 3,
                                             "reps": 10,
@@ -601,20 +554,17 @@ class WorkoutPlanControllerTest {
                                         ]
                                       },
                                       {
-                                        "id": "day-2",
                                         "day": "TUESDAY",
                                         "type": "LOWER_BODY",
                                         "targetMuscles": ["LEGS", "GLUTES", "CALVES"],
                                         "exercises": [
                                           {
-                                            "id": "ex-3",
                                             "name": "Squats",
                                             "sets": 4,
                                             "reps": 10,
                                             "muscleGroup": "LEGS"
                                           },
                                           {
-                                            "id": "ex-4",
                                             "name": "Lunges",
                                             "sets": 3,
                                             "reps": 12,
@@ -623,27 +573,23 @@ class WorkoutPlanControllerTest {
                                         ]
                                       },
                                       {
-                                        "id": "day-3",
                                         "day": "WEDNESDAY",
                                         "type": "FULL_BODY",
                                         "targetMuscles": ["CHEST", "BACK", "CORE", "CARDIO"],
                                         "exercises": [
                                           {
-                                            "id": "ex-5",
                                             "name": "Push-Ups",
                                             "sets": 3,
                                             "reps": 15,
                                             "muscleGroup": "CHEST"
                                           },
                                           {
-                                            "id": "ex-6",
                                             "name": "Plank",
                                             "sets": 3,
                                             "reps": 60,
                                             "muscleGroup": "CORE"
                                           },
                                           {
-                                            "id": "ex-7",
                                             "name": "Jump Rope",
                                             "sets": 5,
                                             "reps": 100,
@@ -652,28 +598,24 @@ class WorkoutPlanControllerTest {
                                         ]
                                       },
                                       {
-                                        "id": "day-4",
                                         "day": "THURSDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
                                         "exercises": []
                                       },
                                       {
-                                        "id": "day-5",
                                         "day": "FRIDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
                                         "exercises": []
                                       },
                                       {
-                                        "id": "day-6",
                                         "day": "SATURDAY",
                                         "type": "REST",
                                         "targetMuscles": [],
                                         "exercises": []
                                       },
                                       {
-                                        "id": "day-7",
                                         "day": "SUNDAY",
                                         "type": "REST",
                                         "targetMuscles": [],

@@ -76,7 +76,7 @@ class WorkoutDayControllerTest {
                           }
                         """
                 ))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().json(
                         """
                                 {
