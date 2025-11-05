@@ -6,6 +6,7 @@ import org.example.backend.service.WorkoutDayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -25,8 +26,10 @@ public class WorkoutDayController {
     }
 
     @PostMapping
-    public WorkoutDay addWorkoutDay(@RequestBody WorkoutDayDto workoutDayDto) {
-        return workoutDayService.addWorkoutDay(workoutDayDto);
+    public ResponseEntity<WorkoutDay> addWorkoutDay(@RequestBody WorkoutDayDto workoutDayDto) {
+        WorkoutDay newDay = workoutDayService.addWorkoutDay(workoutDayDto);
+        return ResponseEntity.created(URI.create("/api/workout-days/" + newDay.id()))
+                .body(newDay);
     }
 
     @PutMapping("/{id}")

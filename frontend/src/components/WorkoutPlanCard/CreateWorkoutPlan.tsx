@@ -35,7 +35,22 @@ export default function CreateWorkoutPlan() {
         ? {
             title: title.trim(),
             description: description.trim(),
-            days: DAY_OF_WEEK_VALUES.map(day => selected[day]!)
+            days: DAY_OF_WEEK_VALUES.map(day => {
+                const dto = selected[day]!;
+
+                return {
+                    day: dto.day,
+                    type: dto.type,
+                    targetMuscles: dto.targetMuscles ?? [],
+                    exercises: (dto.exercises ?? []).map(e => ({
+                        name: e.name,
+                        sets: e.sets,
+                        reps: e.reps,
+                        muscleGroup: e.muscleGroup
+                    }))
+                };
+
+            })
         }
         : null;
 
@@ -57,6 +72,21 @@ export default function CreateWorkoutPlan() {
                 console.error(e);
                 setSubmitError(e?.response?.data ?? "The plan could not to be saved")
             })
+    }
+
+    function cloneDayForPlan(day: WorkoutDay, weekDay: DayOfWeek): WorkoutDayDto {
+        return {
+            day: weekDay,
+            type: day.type,
+            targetMuscles: day.targetMuscles ??
+                Array.from(new Set((day.exercises ?? []).map(e => e.muscleGroup))),
+            exercises: (day.exercises ?? []).map(e => ({
+                name: e.name,
+                sets: e.sets,
+                reps: e.reps,
+                muscleGroup: e.muscleGroup
+            }))
+        };
     }
 
     const nav = useNavigate();
@@ -114,7 +144,7 @@ export default function CreateWorkoutPlan() {
                                 onChange={(dto) => updateDay(d, dto)}
                                 onCreatedToLibrary={(created: WorkoutDay) => {
                                     addToLibrary(created);
-                                    updateDay(d, created);
+                                    updateDay(d, cloneDayForPlan(created, d));
                                 }}
                             />
                         ))}

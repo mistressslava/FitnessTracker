@@ -8,11 +8,14 @@ import {Button} from "@/components/ui/button.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {useExercises} from "@/components/ExerciseCard/UseExercises.ts";
+import type {WorkoutPlan} from "@/types/WorkoutPlan.ts";
 
 type WorkoutDayProps = {
     workoutDay: WorkoutDay;
     onSaved?: (saved: WorkoutDay) => void;
     onCancel?: () => void;
+    planId?: string;
+    plan?: WorkoutPlan;
 }
 
 export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
@@ -22,20 +25,22 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
     const [draftExercises, setDraftExercises] = useState<Exercise[]>(props.workoutDay.exercises ?? []);
 
     const [isEditing, setIsEditing] = useState(false);
+    const [error, setError] = useState("");
 
     const {exercises: library} = useExercises();
 
     useEffect(() => {
         setDraftDay(props.workoutDay.day);
         setDraftType(props.workoutDay.type);
-        setDraftTargetMuscle(props.workoutDay.targetMuscles ?? []);
         setDraftExercises(props.workoutDay.exercises ?? []);
+        setDraftTargetMuscle(props.workoutDay.targetMuscles ?? []);
     }, [props.workoutDay]);
 
     // UPDATE
     function updateWorkoutDay() {
+        setError("");
 
-        const draftTargetMuscle = Array.from(
+        const combinedMuscles = Array.from(
             new Set(
                 (draftExercises ?? [])
                     .map(ex => ex.muscleGroup)
@@ -43,11 +48,62 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
             )
         );
 
+        if (props.planId && props.plan) {
+            const updatedDays = props.plan.days.map(d =>
+                d.id === props.workoutDay.id
+                    ? {
+                        ...d,
+                        day: draftDay,
+                        type: draftType,
+                        targetMuscles: combinedMuscles,
+                        exercises: draftExercises,
+                    }
+                    : d
+            );
+            axios.put(`/api/workout-plans/${props.planId}`, {
+                title: props.plan.title,
+                description: props.plan.description,
+                days: updatedDays.map(d => ({
+                    day: d.day,
+                    type: d.type,
+                    targetMuscles: d.targetMuscles,
+                    exercises: (d.exercises ?? []).map(ex => ({
+                        name: ex.name,
+                        sets: ex.sets,
+                        reps: ex.reps,
+                        muscleGroup: ex.muscleGroup,
+                    })),
+                })),
+            })
+                .then(r => {
+                    const updatedPlan = r.data as WorkoutPlan;
+                    const updatedDay =
+                        updatedPlan.days.find(d => d.id === props.workoutDay.id) ??
+                        updatedPlan.days.find(d => d.day === draftDay);
+
+                    if (updatedDay) {
+                        props.onSaved?.(updatedDay);
+                    }
+                    setIsEditing(false);
+                })
+                .catch(e => {
+                    console.log(e);
+                    alert(String(e.response?.data ?? e.message));
+                });
+
+            return;
+        }
+
         axios.put('/api/workout-days/' + props.workoutDay.id, {
             day: draftDay,
             type: draftType,
-            targetMuscles: draftTargetMuscle,
-            exercises: draftExercises,
+            targetMuscles: combinedMuscles,
+            exercises: draftExercises.map(ex => ({
+                name: ex.name,
+                sets: ex.sets,
+                reps: ex.reps,
+                muscleGroup: ex.muscleGroup,
+            })),
         })
             .then(response => {
                 setDraftDay(response.data.day);
@@ -100,6 +156,8 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
         setIsEditing(false)
         props.onCancel?.()
     }
+
+    if (error) return <p className="text-red-600">Failed: {error}</p>;
 
 
     return (

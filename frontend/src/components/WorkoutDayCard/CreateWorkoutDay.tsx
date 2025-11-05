@@ -112,6 +112,11 @@ export default function CreateWorkoutDay({onAdd}: Readonly<CreateWorkoutDayProps
 
 
     function validate(dto: WorkoutDayDto): string | null {
+        if (dto.type === "REST") {
+            if (dto.targetMuscles.length > 0) return "For REST you must not add target Muscles.";
+            if (dto.exercises.length > 0) return "For REST exercises must be empty.";
+            return null;
+        }
         if (dto.exercises.length === 0) return "Add at least one exercise.";
         return null;
     }

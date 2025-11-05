@@ -47,13 +47,13 @@ public class WorkoutPlanGenerationService {
                                    "title": "...",
                                    "description": "...",
                                    "days": [
-                                     { "day": "MONDAY",    "type": "...", "targetMuscles": [...], "exercises": [...] },
-                                     { "day": "TUESDAY",   "type": "...", "targetMuscles": [...], "exercises": [...] },
-                                     { "day": "WEDNESDAY", "type": "...", "targetMuscles": [...], "exercises": [...] },
-                                     { "day": "THURSDAY",  "type": "...", "targetMuscles": [...], "exercises": [...] },
-                                     { "day": "FRIDAY",    "type": "...", "targetMuscles": [...], "exercises": [...] },
-                                     { "day": "SATURDAY",  "type": "...", "targetMuscles": [...], "exercises": [...] },
-                                     { "day": "SUNDAY",    "type": "...", "targetMuscles": [...], "exercises": [...] }
+                                     { "id": "...", "day": "MONDAY",    "type": "...", "targetMuscles": [...], "exercises": [...] },
+                                     { "id": "...", "day": "TUESDAY",   "type": "...", "targetMuscles": [...], "exercises": [...] },
+                                     { "id": "...", "day": "WEDNESDAY", "type": "...", "targetMuscles": [...], "exercises": [...] },
+                                     { "id": "...", "day": "THURSDAY",  "type": "...", "targetMuscles": [...], "exercises": [...] },
+                                     { "id": "...", "day": "FRIDAY",    "type": "...", "targetMuscles": [...], "exercises": [...] },
+                                     { "id": "...", "day": "SATURDAY",  "type": "...", "targetMuscles": [...], "exercises": [...] },
+                                     { "id": "...", "day": "SUNDAY",    "type": "...", "targetMuscles": [...], "exercises": [...] }
                                    ]
                                  }
                                 
@@ -64,7 +64,8 @@ public class WorkoutPlanGenerationService {
                                  - type ∈ { UPPER_BODY, LOWER_BODY, FULL_BODY, REST }.
                                  - CORE is allowed on UPPER_BODY and LOWER_BODY days (as accessory work).
                                  - CARDIO and MOBILITY are only allowed on FULL_BODY days (never on UPPER/LOWER/REST).
-                                
+                                 — Each day should contain an id
+                                 — Each exercise should have random unique string id.
                                 """),
                 new ChatGPTRequestMessage("user", prompt)
         );
@@ -86,8 +87,9 @@ public class WorkoutPlanGenerationService {
                                         "items", Map.of(
                                                 "type", "object",
                                                 "additionalProperties", false,
-                                                "required", List.of("day", "type", "targetMuscles", "exercises"),
+                                                "required", List.of("id", "day", "type", "targetMuscles", "exercises"),
                                                 "properties", Map.of(
+                                                        "id", Map.of("type", "string"),
                                                         "day", Map.of(
                                                                 "type", "string",
                                                                 "enum", List.of(
@@ -115,8 +117,9 @@ public class WorkoutPlanGenerationService {
                                                                 "items", Map.of(
                                                                         "type", "object",
                                                                         "additionalProperties", false,
-                                                                        "required", List.of("name", "sets", "reps", "muscleGroup"),
+                                                                        "required", List.of("id", "name", "sets", "reps", "muscleGroup"),
                                                                         "properties", Map.of(
+                                                                                "id", Map.of("type", "string"),
                                                                                 "name", Map.of("type", "string"),
                                                                                 "sets", Map.of("type", "integer", "minimum", 1),
                                                                                 "reps", Map.of("type", "integer", "minimum", 1),
