@@ -30,7 +30,7 @@ Built with modern technologies — **Java Spring Boot**, **React**, **TypeScript
 ## 🧠 Tech Stack
 
 - **Frontend:** React, TypeScript, Axios, React Router DOM, TailwindCSS  
-- **Backend:** Java 21, Spring Boot, MongoDB, JUnit 5, Mockito, Maven  
+- **Backend:** Java 25, Spring Boot, MongoDB, JUnit 5, Mockito, Maven  
 - **Database:** MongoDB  
 - **Deployment:** Docker, Docker Compose  
 - **Profiles:** Separate `dev` and `prod` environments  
