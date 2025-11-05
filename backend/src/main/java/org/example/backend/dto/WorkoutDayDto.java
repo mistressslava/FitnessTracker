@@ -1,6 +1,5 @@
 package org.example.backend.dto;
 
-import org.example.backend.model.Exercise;
 import org.example.backend.model.MuscleGroup;
 import org.example.backend.model.WorkoutDayType;
 
@@ -11,5 +10,5 @@ import java.util.Set;
 public record WorkoutDayDto(DayOfWeek day,
                             WorkoutDayType type,
                             Set<MuscleGroup> targetMuscles,
-                            List<Exercise> exercises) {
+                            List<ExerciseDto> exercises) {
 }
