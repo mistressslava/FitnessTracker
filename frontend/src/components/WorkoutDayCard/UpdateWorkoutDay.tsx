@@ -32,8 +32,8 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
     useEffect(() => {
         setDraftDay(props.workoutDay.day);
         setDraftType(props.workoutDay.type);
-        setDraftTargetMuscle(props.workoutDay.targetMuscles ?? []);
         setDraftExercises(props.workoutDay.exercises ?? []);
+        setDraftTargetMuscle(props.workoutDay.targetMuscles ?? []);
     }, [props.workoutDay]);
 
     // UPDATE
@@ -76,8 +76,15 @@ export default function UpdateWorkoutDay(props: Readonly<WorkoutDayProps>) {
                 })),
             })
                 .then(r => {
+                    const updatedPlan = r.data as WorkoutPlan;
+                    const updatedDay =
+                        updatedPlan.days.find(d => d.id === props.workoutDay.id) ??
+                        updatedPlan.days.find(d => d.day === draftDay);
+
+                    if (updatedDay) {
+                        props.onSaved?.(updatedDay);
+                    }
                     setIsEditing(false);
-                    props.onSaved?.(r.data);
                 })
                 .catch(e => {
                     console.log(e);

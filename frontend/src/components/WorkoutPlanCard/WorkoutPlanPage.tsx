@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import type {WorkoutPlan} from "@/types/WorkoutPlan.ts";
 import {Card, CardHeader, CardTitle} from "@/components/ui/card.tsx";
@@ -35,23 +35,28 @@ export default function WorkoutPlanPage() {
             .catch(e => setError(String(e.response?.data ?? e.message)));
     }
 
-    useEffect(() => {
-        getAllWorkoutPlans();
-    }, []);
-
     function togglePLan(id: string) {
         setOpenPlanId(prev => (prev === id ? null : id));
         setEditing((prev) =>
             (prev && prev.planId === id ? null : prev));
     }
 
-    const replaceDayInPlans = (planId: string, updatedDay: WorkoutDay) => {
+    const replaceDayInPlans = useCallback((planId: string, updated: WorkoutDay) => {
         setPlans(prev =>
-            prev.map(p =>
-                p.id !== planId ? p : { ...p, days: p.days.map(d => d.id === updatedDay.id ? updatedDay : d) }
-            )
+            prev.map(p => {
+                if (p.id !== planId) return p;
+                return {
+                    ...p,
+                    days: p.days.map(d =>
+                        d.id === updated.id || d.day === updated.day
+                            ? { ...updated, exercises: [...updated.exercises] } // new reference
+                            : { ...d, exercises: [...d.exercises] }
+                    ),
+                };
+            })
         );
-    };
+    }, []);
+
 
 
     useEffect(() => {
@@ -99,7 +104,8 @@ export default function WorkoutPlanPage() {
                                             editing?.dayId === day.id;
 
                                         return (
-                                            <Card key={day.id} className="overflow-hidden">
+                                            <Card key={`${day.id}-${day.type}-${day.exercises.length}`}
+                                                  className="overflow-hidden">
                                                 <CardHeader className="bg-muted/50">
                                                     <CardTitle className="flex items-center pt-3 justify-between">
                                                         <div className="flex flex-col gap-1 text-left">
