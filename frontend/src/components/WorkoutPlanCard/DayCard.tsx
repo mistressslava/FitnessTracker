@@ -24,6 +24,19 @@ export default function DayCard(props: Readonly<DaySlotProps>) {
         setMode("idle");
     };
 
+    function cloneDayForPlan(day: WorkoutDay, weekDay: DayOfWeek): WorkoutDayDto {
+        return {
+            id: crypto.randomUUID(),
+            day: weekDay,
+            type: day.type,
+            targetMuscles: day.targetMuscles ?? Array.from(new Set((day.exercises ?? []).map(e => e.muscleGroup))),
+            exercises: (day.exercises ?? []).map(e => ({
+                ...e,
+                id: crypto.randomUUID(),
+            })),
+        };
+    }
+
     return (
         <>
             {mode === "idle" && (
@@ -33,7 +46,8 @@ export default function DayCard(props: Readonly<DaySlotProps>) {
                         value={props.value?.id ?? ""}  // value stays empty for ad-hoc (non-library) day
                         onValueChange={e => {
                             const chosen = props.library.find(d => d.id === e);
-                            if (chosen) props.onChange({...chosen, day: props.weekDay});
+                            if (!chosen) return;
+                            props.onChange(cloneDayForPlan(chosen, props.weekDay));
                         }}
                         required
                     >
