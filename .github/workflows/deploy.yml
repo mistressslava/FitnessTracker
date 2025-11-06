@@ -1,0 +1,94 @@
+name: FitnessTracker Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload Frontend-Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/*
+
+  build-backend:
+    needs: build-frontend   # sorgt dafür, dass der vorherige Job abgeschlossen ist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Download Frontend-Build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: backend/src/main/resources/static
+
+      - name: Build Backend with maven
+        run: mvn -B package --file backend/pom.xml
+
+      - name: Upload app.jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: app.jar
+          path: backend/target/app.jar
+
+  push-to-docker-hub:
+    needs: build-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Backend Artefakt
+        uses: actions/download-artifact@v4
+        with:
+          name: app.jar   # so hast du das Artefakt beim Build benannt
+          path: backend/target  # Zielordner für die heruntergeladene app.jar
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}     # soll in GitHub-Repo unter Settings → Secrets gespeichert werden
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+
+      - name: Build and push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .      # verweist auf dein Dockerfile
+          push: 'true'    # damit das Image hochgeladen wird
+          tags: ${{secrets.DOCKERHUB_TAG}}
+
+  deploy:
+    needs: push-to-docker-hub
+    runs-on: ubuntu-latest
+    name: deploy-to-render
+    steps:
+      - name: Trigger Render.com Deployment
+        run: |
+          curl -X POST ${{secrets.RENDER_DEPLOY_HOOK}}
