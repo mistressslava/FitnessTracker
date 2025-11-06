@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile
+    image: mistressslava/fitnesstracker:latest
+    container_name: fitnesstracker
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_DB_URI:  ${MONGO_DB_URI}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: fitnessTracker
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo-data:
