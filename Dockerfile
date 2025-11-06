@@ -1,4 +1,5 @@
-FROM openjdk:25
+FROM eclipse-temurin:25-jre
+WORKDIR /app
+COPY backend/target/app.jar app.jar
 EXPOSE 8080
-ADD backend/target/app.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
