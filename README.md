@@ -4,7 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=springboot)
 ![React](https://img.shields.io/badge/React-18-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![MongoDB](https://img.shields.io/badge/MongoDB-6-green?logo=mongodb)
+![MongoDB](https://img.shields.io/badge/MongoDB-8-green?logo=mongodb)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)
 
 [![Build](https://github.com/mistressslava/FitnessTracker/actions/workflows/maven.yml/badge.svg)](https://github.com/mistressslava/FitnessTracker/actions/)
@@ -46,8 +46,22 @@ Clone the repository and start the app:
 ```bash
 git clone https://github.com/mistressslava/FitnessTracker.git
 cd FitnessTracker
-docker-compose up --build
+
+# Replace the placeholder with your real Atlas SRV URI (include /fitnessTracker at the end)
+export MONGO_DB_URI='mongodb+srv://USER:URLENCODED_PASS@CLUSTER.mongodb.net/fitnessTracker'
+
+# Optional
+export OPENAI_API_KEY='sk-your-key'
+
+docker compose up --build
+
 ```
+---
+
+## 🚀 Deploy to Render
+
+https://fitnesstracker-deploy.onrender.com/exercises
+
 ---
 ## 👩‍💻 Author
 
