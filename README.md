@@ -58,9 +58,9 @@ docker compose up --build
 ```
 ---
 
-## 🚀 Deploy to Render
+## 🚀 Deploy on Render
 
-https://fitnesstracker-deploy.onrender.com/exercises
+https://fitnesstracker-deploy.onrender.com
 
 ---
 ## 👩‍💻 Author
