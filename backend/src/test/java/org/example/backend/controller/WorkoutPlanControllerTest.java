@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -36,6 +37,7 @@ class WorkoutPlanControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getAllWorkoutPlans_shouldReturnEmptyList() throws Exception {
         //GIVEN
@@ -55,6 +57,8 @@ class WorkoutPlanControllerTest {
 
 
     @Test
+    @WithMockUser
+    @DirtiesContext
     void addNewWorkoutPLan_shouldCreateWorkoutPlan_whenCalled() throws Exception {
 
         mockMvc.perform(post("/api/workout-plans")
@@ -257,6 +261,7 @@ class WorkoutPlanControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void updateWorkoutPlanById_shouldThrowException() throws Exception {
         //GIVEN
@@ -380,6 +385,7 @@ class WorkoutPlanControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void updateWorkoutPlanById_shouldUpdateWorkoutPlan() throws Exception {
         //GIVEN

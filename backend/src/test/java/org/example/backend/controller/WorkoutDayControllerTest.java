@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
@@ -37,6 +38,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getAllWorkoutDays_shouldReturnList() throws Exception {
         mockMvc.perform(get("/api/workout-days"))
@@ -46,6 +48,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getAllWorkoutDays_shouldReturnEmpty_whenNoDaysExist() throws Exception {
         mockMvc.perform(get("/api/workout-days"))
@@ -54,6 +57,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void addWorkoutDay_shouldCreateWorkoutDay_whenCalled() throws Exception {
 
@@ -97,6 +101,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void deleteWorkout_shouldDeleteExerciseById_status204() throws Exception {
         //GIVEN
@@ -116,6 +121,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void deleteWorkout_whenIdNotFound_shouldThrowException() throws Exception {
         //WHEN
@@ -125,6 +131,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void updateWorkoutDayById_shouldUpdateWorkoutDay() throws Exception {
         //GIVEN
@@ -175,6 +182,7 @@ class WorkoutDayControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void updateWorkoutDayById_shouldThrowException_whenIdNotFound() throws Exception {
         //WHEN
