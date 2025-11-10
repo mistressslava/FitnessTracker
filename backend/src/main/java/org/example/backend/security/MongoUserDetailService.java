@@ -1,10 +1,12 @@
 package org.example.backend.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class MongoUserDetailService implements UserDetailsService {
 
@@ -16,12 +18,11 @@ public class MongoUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repo.findByUsername(username);
-
-        if(user == null) {
-            System.out.println("User Not Found");
-            throw new UsernameNotFoundException("user not found");
-        }
+        Users user = repo.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.debug("User not found: {}", username);
+                    return new UsernameNotFoundException("User not found");
+                });
 
         return new UserPrincipal(user);
     }
