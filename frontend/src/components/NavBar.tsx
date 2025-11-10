@@ -38,6 +38,10 @@ export default function Navbar() {
                         <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                               to={"/creatNewPlan"}>Create NEW plan
                         </Link>
+                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                              to={"/login"}>Login
+                        </Link>
+
                     </div>
                 </div>
             </div>

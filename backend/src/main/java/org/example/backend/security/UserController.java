@@ -13,12 +13,12 @@ public class UserController {
         this.service = service;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/api/register")
     public Users register(@RequestBody Users user) {
         return service.register(user);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public String login(@RequestBody Users user) {
         return service.verify(user);
     }
