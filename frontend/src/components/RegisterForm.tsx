@@ -1,5 +1,4 @@
-import {useState} from "react";
-import type {Users} from "@/types/Users.ts";
+import {type FormEvent, useState} from "react";
 import axios from "axios";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Input} from "@/components/ui/input.tsx";
@@ -16,27 +15,25 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
-    const [user, setUser] = useState<Users>({ username: "", password: "" })
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
         setError("")
 
         if (password !== confirmPassword) {
             setError("Passwords do not match")
-            return
+            return;
         }
 
         setLoading(true)
 
-        const userData = { username, password }
-
-        axios.post("/api/auth/register", userData)
-            .then((res) => {
-                localStorage.setItem("authToken", res.data.token)
-                setUser({ username: "", password: "" })
-                setError("")
-                window.location.href = "/"
+        axios.post("/api/auth/register", { username, password })
+            .then(res => {
+                const token = res.data?.token;
+                if (!token) throw new Error("No token in response");
+                localStorage.setItem("authToken", token);
+                setUsername(""); setPassword(""); setConfirmPassword(""); setError("");
+                window.location.href = "/";
             })
             .catch((err) => {
                 if (err.response && typeof err.response.data === "string") {
@@ -54,7 +51,7 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
     }
 
     const handleOAuthRegister = (provider: "github" | "google") => {
-        window.location.href = `/api/oauth/${provider}/register`
+        window.location.href = `/oauth2/authorization/${provider}`
     }
 
     return (
@@ -111,7 +108,8 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
                     </div>
 
                     {error && (
-                        <div className="bg-destructive/10 border border-destructive rounded-md p-3 text-sm text-destructive">
+                        <div
+                            className="bg-destructive/10 border border-destructive rounded-md p-3 text-sm text-destructive">
                             {error}
                         </div>
                     )}
@@ -141,7 +139,7 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
                         onClick={() => handleOAuthRegister("github")}
                         className="border-border hover:bg-secondary text-foreground"
                     >
-                        <GithubIcon className="w-4 h-4 mr-2" />
+                        <GithubIcon className="w-4 h-4 mr-2"/>
                         GitHub
                     </Button>
                     <Button
@@ -150,7 +148,7 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
                         onClick={() => handleOAuthRegister("google")}
                         className="border-border hover:bg-secondary text-foreground"
                     >
-                        <Chrome className="w-4 h-4 mr-2" />
+                        <Chrome className="w-4 h-4 mr-2"/>
                         Google
                     </Button>
                 </div>

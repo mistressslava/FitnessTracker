@@ -1,7 +1,26 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Dumbbell} from "lucide-react"
+import {useEffect, useState} from "react";
+import {Button} from "@/components/ui/button.tsx";
 
 export default function Navbar() {
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkToken = () => setIsAuthenticated(!!localStorage.getItem("authToken"));
+        checkToken();
+
+        window.addEventListener("storage", checkToken);
+        return () => window.removeEventListener("storage", checkToken);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        setIsAuthenticated(false);
+        navigate("/login");
+    };
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -19,28 +38,43 @@ export default function Navbar() {
 
                     {/* Navigation */}
                     <div className="hidden md:flex items-center gap-8">
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/"}>
-                            Main page
-                        </Link>
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/home"}>Home
-                        </Link>
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/exercises"}>Exercises
-                        </Link>
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/workouts"}>Workouts
-                        </Link>
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/plans"}>Plans
-                        </Link>
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/creatNewPlan"}>Create NEW plan
-                        </Link>
-                        <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                              to={"/login"}>Login
-                        </Link>
+
+                        {isAuthenticated ? (
+                            <>
+                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                      to={"/"}>
+                                    Main page
+                                </Link>
+                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                      to={"/home"}>Home
+                                </Link>
+                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                      to={"/exercises"}>Exercises
+                                </Link>
+                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                      to={"/workouts"}>Workouts
+                                </Link>
+                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                      to={"/plans"}>Plans
+                                </Link>
+                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                      to={"/creatNewPlan"}>Create NEW plan
+                                </Link>
+                                <Button
+                                    onClick={handleLogout}
+                                    className="text-sm font-medium bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                                >
+                                    Logout
+                                </Button>
+                            </>
+                        ) : (
+                            <Link
+                                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                to={"/login"}
+                            >
+                                Login
+                            </Link>
+                        )}
 
                     </div>
                 </div>

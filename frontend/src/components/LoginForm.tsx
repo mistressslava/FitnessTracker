@@ -4,14 +4,12 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Chrome, GithubIcon} from "lucide-react";
 import axios from "axios";
-import type {Users} from "@/types/Users.ts";
 
 type LoginFormProps = {
     onSwitchToRegister: () => void
 }
 
 export default function LoginForm(props: Readonly<LoginFormProps>) {
-    const [user, setUser] = useState<Users>({ username: "", password: "" })
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -24,14 +22,13 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
         setError("");
         setLoading(true);
 
-        const userData = { username, password }
-
-        axios.post('/api/auth/login', userData)
+        axios.post("/api/auth/login", { username, password })
             .then(res => {
-                localStorage.setItem("authToken", res.data.token)
-                setUser({username: "", password: ""})
-                setError("");
-                window.location.href = "/"
+                const token = typeof res.data === "string" ? res.data : res.data?.token;
+                if (!token) throw new Error("No token in response");
+                localStorage.setItem("authToken", token);
+                setUsername(""); setPassword(""); setError("");
+                window.location.href = "/";
             })
             .catch(err => {
                 if (err.response && typeof err.response.data === "string") {
@@ -49,7 +46,7 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
     }
 
     const handleOAuthLogin = (provider: "github" | "google") => {
-        window.location.href = `/api/oauth/${provider}/login`
+        window.location.href = `/oauth2/authorization/${provider}`;
     }
 
     return (
@@ -66,8 +63,8 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
                         </label>
                         <Input
                             id="username"
-                            type="johndoe"
-                            placeholder="username"
+                            type="text"
+                            placeholder="johndoe"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             className="bg-input border-border text-foreground placeholder:text-muted-foreground"
