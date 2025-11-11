@@ -33,14 +33,15 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/oauth2/**", "/oauth2/authorization/**")
+                        .requestMatchers("/register/**","/oauth2/**", "/login/oauth2/**", "/oauth2/authorization/**")
                         .permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/api/auth/oauth/success", true))
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/"))

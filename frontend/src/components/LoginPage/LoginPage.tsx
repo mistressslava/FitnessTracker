@@ -1,6 +1,6 @@
-import LoginForm from "@/components/LoginForm.tsx";
+import LoginForm from "@/components/LoginPage/LoginForm.tsx";
 import {useState} from "react";
-import RegisterForm from "@/components/RegisterForm.tsx";
+import RegisterForm from "@/components/LoginPage/RegisterForm.tsx";
 
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true)

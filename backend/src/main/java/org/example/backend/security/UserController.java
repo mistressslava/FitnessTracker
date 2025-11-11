@@ -14,11 +14,9 @@ import java.util.Map;
 public class UserController {
 
     private final UserService service;
-    private final UserRepo repo;
 
-    public UserController(UserService service, UserRepo repo) {
+    public UserController(UserService service) {
         this.service = service;
-        this.repo = repo;
     }
 
     @PostMapping("/api/auth/register")
