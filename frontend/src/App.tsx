@@ -5,6 +5,7 @@ import MainPage from "./components/MainPage.tsx";
 import WorkoutDaysPage from "./components/WorkoutDayCard/WorkoutDaysPage.tsx";
 import WorkoutPlanPage from "./components/WorkoutPlanCard/WorkoutPlanPage.tsx";
 import CreateWorkoutPlan from "./components/WorkoutPlanCard/CreateWorkoutPlan.tsx";
+import LoginPage from "./components/LoginPage.tsx";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
                                     <Route path={"/workouts"} element={<WorkoutDaysPage/>}/>
                                     <Route path={"/plans"} element={<WorkoutPlanPage/>}/>
                                     <Route path={"/creatNewPlan"} element={<CreateWorkoutPlan/>}/>
+                                    <Route path={"/login"} element={<LoginPage/>}/>
                                 </Routes>
                             </div>
                         </div>

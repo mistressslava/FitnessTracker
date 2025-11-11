@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,6 +33,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getAllExercises_shouldReturnListOfExercises() throws Exception {
         //GIVEN
@@ -54,6 +56,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getAllExercises_shouldReturnEmptyList_whenNoExercisesAdded() throws Exception {
         //GIVEN
@@ -65,6 +68,8 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
+    @DirtiesContext
     void addNewExercise_shouldReturnAddedExercise() throws Exception {
         //WHEN
         mockMvc.perform(post("/api/exercises")
@@ -93,6 +98,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void addNewExercise_shouldReturn400_whenEmptyExerciseField() throws Exception {
         //WHEN
@@ -114,6 +120,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void addNewExercise_shouldReturn400_whenIllegalArgument() throws Exception {
         //WHEN
@@ -135,6 +142,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void updateExerciseById_shouldUpdateExercise() throws Exception {
         //GIVEN
@@ -165,6 +173,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void updateExerciseById_shouldThrowException_whenIdNotFound() throws Exception {
         //WHEN
@@ -183,6 +192,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void deleteExercise_shouldDeleteExerciseById_status204() throws Exception {
         //GIVEN
@@ -196,6 +206,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void deleteExercise_whenIdNotFound_shouldThrowException() throws Exception {
         //WHEN
@@ -205,6 +216,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getExerciseById_shouldReturnExercise_whenIdExist() throws Exception {
         //GIVEN
@@ -234,6 +246,7 @@ class ExerciseControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DirtiesContext
     void getExerciseById_shouldThrowException_whenIdNotExist() throws Exception {
         //WHEN

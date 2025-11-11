@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,6 +31,8 @@ class WorkoutPlanGenerationControllerTest {
     private MockRestServiceServer mockServer;
 
     @Test
+    @WithMockUser
+    @DirtiesContext
     void generatePlan_shouldBeSuccessful() throws Exception {
         //GIVEN
         String planJson = """
@@ -78,6 +82,8 @@ class WorkoutPlanGenerationControllerTest {
     }
 
     @Test
+    @WithMockUser
+    @DirtiesContext
     void generatePlan_shouldThrowException() throws Exception {
         //GIVEN
 
