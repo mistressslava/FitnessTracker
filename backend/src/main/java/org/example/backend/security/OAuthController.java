@@ -24,22 +24,22 @@ public class OAuthController {
         OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
         Map<String, Object> attrs = oauthToken.getPrincipal().getAttributes();
 
-        String username = (String) (attrs.get("login") != null
-                ? attrs.get("login")
-                : attrs.get("name"));
+        final String username =
+                (String) attrs.getOrDefault("login",
+                        attrs.getOrDefault("name", attrs.get("email")));
 
-        if (username == null) {
+        if (username == null || username.isBlank()) {
             return ResponseEntity.badRequest().body("No username found from provider");
         }
 
-        userRepo.findByUsername(username)
+        Users user = userRepo.findByUsername(username)
                 .orElseGet(() -> userRepo.save(Users.oauth(username)));
 
-        String token = jwtService.generateToken(username);
+        String token = jwtService.generateToken(user.username());
 
         return ResponseEntity.ok(Map.of(
                 "token", token,
-                "username", username
+                "username", user.username()
         ));
     }
 }
