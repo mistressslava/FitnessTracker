@@ -43,11 +43,11 @@ export default function Navbar() {
                             <>
                                 <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                                       to={"/"}>
-                                    Main page
+                                    Home
                                 </Link>
-                                <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                                      to={"/home"}>Home
-                                </Link>
+                                {/*<Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"*/}
+                                {/*      to={"/home"}>Home*/}
+                                {/*</Link>*/}
                                 <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                                       to={"/exercises"}>Exercises
                                 </Link>

@@ -1,5 +1,6 @@
 package org.example.backend.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,9 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+    @Value("${app.url}")
+    private String appURL;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -39,12 +43,13 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error"))
+                        .successHandler((req, res, auth) -> {
+                            res.sendRedirect(appURL + "/auth/callback");
+                        })
+                        .failureUrl("/login?error=true"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/"))
+                        .logoutSuccessUrl(appURL + "/"))
                 //.httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
