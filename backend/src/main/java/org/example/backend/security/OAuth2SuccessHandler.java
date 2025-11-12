@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
@@ -31,9 +33,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) auth;
         Map<String, Object> a = token.getPrincipal().getAttributes();
 
-        String username = a.get("login") != null ? (String) a.get("login")
-                : a.get("email") != null ? (String) a.get("email")
-                : (String) a.get("name");
+        String username = Stream.of("login", "email", "name")
+                .map(k -> (String) a.get(k))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
 
         if (username == null || username.isBlank()) {
             res.sendRedirect(appURL + "/login?error=nousername");
