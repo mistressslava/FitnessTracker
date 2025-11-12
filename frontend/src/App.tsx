@@ -26,10 +26,23 @@ function App() {
 
     const nav = useNavigate();
 
+    const api = window.location.host === "localhost:5173"
+        ? "http://localhost:8080"
+        : window.location.origin;
+
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        setUser(null);
-        nav("/login");
+        axios.post(api + "/logout", null, { withCredentials: true })
+            .then( () => {
+                console.log("Logged out on backend")
+            })
+            .catch((err) => {
+                console.warn("Logout request failed", err);
+            })
+            .finally(() => {
+                localStorage.removeItem("authToken");
+                setUser(null);
+                nav("/login");
+            });
     };
 
     useEffect(() => {
