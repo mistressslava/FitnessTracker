@@ -1,5 +1,6 @@
 import {FeaturesSection} from "@/components/MainPage/FeatureSection.tsx";
 import {CTASection} from "@/components/MainPage/CTASection.tsx";
+import {BicepsFlexed} from "lucide-react";
 
 export default function MainPage() {
 
@@ -15,8 +16,13 @@ export default function MainPage() {
                     </p>
                 </div>
             </div>
-            <div className="mt-8 p-8 bg-card/80 backdrop-blur rounded-lg max-w-4xl mx-auto border border-border">
-                <p className="text-xl text-foreground font-semibold mb-4">💪 About IronForge</p>
+            <div className="mt-8 p-8 pt-4 bg-card/80 backdrop-blur rounded-lg max-w-4xl mx-auto border border-border">
+                <p className="text-xl text-foreground font-semibold mb-4 flex items-center justify-center gap-3">
+                    <span className="bg-primary/20 w-12 h-12 rounded-lg flex items-center justify-center -translate-y-0.5">
+                        <BicepsFlexed className="h-7 w-7 text-primary" />
+                    </span>About IronForge
+                </p>
+
                 <p className="text-muted-foreground text-xl leading-relaxed mb-4">
                     IronForge is a smart fitness platform that helps you design and follow personalized workout plans —
                     powered by AI technology. Whether you're a beginner or an experienced athlete, our system adapts to
