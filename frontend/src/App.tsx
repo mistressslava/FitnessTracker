@@ -39,6 +39,7 @@ function App() {
                 console.warn("Logout request failed", err);
             })
             .finally(() => {
+                console.log(user);
                 localStorage.removeItem("authToken");
                 setUser(null);
                 nav("/login");
