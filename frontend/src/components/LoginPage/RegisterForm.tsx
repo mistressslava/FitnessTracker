@@ -51,7 +51,7 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
     }
 
     const handleOAuthRegister = (provider: "github" | "google") => {
-        window.location.href = `/oauth2/authorization/${provider}`
+        window.location.href = `/oauth2/authorization/${provider}`;
     }
 
     return (
