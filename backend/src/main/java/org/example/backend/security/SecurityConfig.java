@@ -43,9 +43,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
-                        .successHandler((req, res, auth) -> {
-                            res.sendRedirect(appURL + "/auth/callback");
-                        })
+                        .defaultSuccessUrl(appURL)
                         .failureUrl("/login?error=true"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
