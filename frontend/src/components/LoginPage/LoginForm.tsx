@@ -46,7 +46,11 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
     }
 
     const handleOAuthLogin = (provider: "github" | "google") => {
-        window.location.href = `/oauth2/authorization/${provider}`;
+        const host: string = window.location.host === "localhost:5173"
+            ? "http://localhost:8080"
+            : window.location.origin;
+
+        window.open(host + `/oauth2/authorization/${provider}`, "_self");
     }
 
     return (

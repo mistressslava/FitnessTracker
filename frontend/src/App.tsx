@@ -1,29 +1,58 @@
 import Navbar from "./components/NavBar.tsx";
 import ExerciseList from "./components/ExerciseCard/ExerciseList.tsx";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import MainPage from "./components/MainPage/MainPage.tsx";
 import WorkoutDaysPage from "./components/WorkoutDayCard/WorkoutDaysPage.tsx";
 import WorkoutPlanPage from "./components/WorkoutPlanCard/WorkoutPlanPage.tsx";
 import CreateWorkoutPlan from "./components/WorkoutPlanCard/CreateWorkoutPlan.tsx";
 import LoginPage from "./components/LoginPage/LoginPage.tsx";
+import axios from "axios";
+import {useEffect, useState} from "react";
+import ProtectedRoute from "@/components/ProtectedRoutes.tsx";
+import type {Users} from "@/types/Users.ts";
 
 function App() {
+    const [user, setUser] = useState<Users | undefined | null>(undefined);
+    console.log(user);
+
+    const loadUser = () => {
+        axios.get("/api/auth/me")
+            .then((res) => setUser(res.data))
+            .catch((e) => {
+                setUser(null);
+                console.log(e);
+            })
+    }
+
+    const nav = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        setUser(null);
+        nav("/login");
+    };
+
+    useEffect(() => {
+        loadUser();
+    }, []);
 
     return (
         <div className="h-full">
             <div className="flex flex-col min-h-screen">
-                <Navbar/>
+                <Navbar user={user} onLogout={handleLogout}/>
                 <div className="flex-grow">
                     <section className="relative min-h-screen"> {/*pb-32 overflow-hidden*/}
                         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
                             <div className="text-center space-y-6">
                                 <Routes>
                                     <Route path={"/"} element={<MainPage/>}/>
-                                    <Route path={"/exercises"} element={<ExerciseList/>}/>
-                                    <Route path={"/workouts"} element={<WorkoutDaysPage/>}/>
-                                    <Route path={"/plans"} element={<WorkoutPlanPage/>}/>
-                                    <Route path={"/creatNewPlan"} element={<CreateWorkoutPlan/>}/>
                                     <Route path={"/login"} element={<LoginPage/>}/>
+                                    <Route element={<ProtectedRoute user={user}/>}>
+                                        <Route path={"/exercises"} element={<ExerciseList/>}/>
+                                        <Route path={"/workouts"} element={<WorkoutDaysPage/>}/>
+                                        <Route path={"/plans"} element={<WorkoutPlanPage/>}/>
+                                        <Route path={"/creatNewPlan"} element={<CreateWorkoutPlan/>}/>
+                                    </Route>
                                 </Routes>
                             </div>
                         </div>

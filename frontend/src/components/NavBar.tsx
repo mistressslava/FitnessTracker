@@ -1,26 +1,16 @@
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Dumbbell} from "lucide-react"
-import {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
+import type {Users} from "@/types/Users.ts";
 
-export default function Navbar() {
+type NavbarProps = {
+    user: Users | null | undefined;
+    onLogout: () => void;
+}
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const navigate = useNavigate();
+export default function Navbar(props: Readonly<NavbarProps>) {
 
-    useEffect(() => {
-        const checkToken = () => setIsAuthenticated(!!localStorage.getItem("authToken"));
-        checkToken();
-
-        window.addEventListener("storage", checkToken);
-        return () => window.removeEventListener("storage", checkToken);
-    }, []);
-
-    const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        setIsAuthenticated(false);
-        navigate("/login");
-    };
+    const isAuthenticated = !!props.user;
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -61,7 +51,7 @@ export default function Navbar() {
                                       to={"/creatNewPlan"}>Create NEW plan
                                 </Link>
                                 <Button
-                                    onClick={handleLogout}
+                                    onClick={props.onLogout}
                                     className="text-sm font-medium bg-destructive hover:bg-destructive/80 text-destructive-foreground"
                                 >
                                     Logout
