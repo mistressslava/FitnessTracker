@@ -1,6 +1,8 @@
 package org.example.backend.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -39,7 +41,7 @@ public class JWTService {
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000 + 5000))
                 .signWith(getKey())
                 .compact();
 
@@ -62,6 +64,7 @@ public class JWTService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
+                .clockSkewSeconds(60)
                 .verifyWith(getKey())
                 .build()
                 .parseSignedClaims(token)
@@ -69,8 +72,12 @@ public class JWTService {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String userName = extractUserName(token);
+            return userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        } catch (JwtException _) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {

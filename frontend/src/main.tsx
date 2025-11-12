@@ -11,16 +11,7 @@ axios.interceptors.request.use((config) => {
     return config;
 });
 
-axios.interceptors.response.use(
-    r => r,
-    e => {
-        if (e.response?.status === 401) {
-            localStorage.removeItem("authToken");
-            window.location.href = "/login";
-        }
-        return Promise.reject(e);
-    }
-);
+axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
