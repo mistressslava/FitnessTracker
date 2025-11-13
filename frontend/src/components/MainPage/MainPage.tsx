@@ -1,8 +1,15 @@
 import {FeaturesSection} from "@/components/MainPage/FeatureSection.tsx";
 import {CTASection} from "@/components/MainPage/CTASection.tsx";
 import {BicepsFlexed} from "lucide-react";
+import type {Users} from "@/types/Users.ts";
 
-export default function MainPage() {
+type NavbarProps = {
+    user: Users | null | undefined;
+}
+
+export default function MainPage(props: Readonly<NavbarProps>) {
+
+    const isAuthenticated = !!props.user;
 
     return (
         <>
@@ -18,8 +25,9 @@ export default function MainPage() {
             </div>
             <div className="mt-8 p-8 pt-4 bg-card/80 backdrop-blur rounded-lg max-w-4xl mx-auto border border-border">
                 <p className="text-xl text-foreground font-semibold mb-4 flex items-center justify-center gap-3">
-                    <span className="bg-primary/20 w-12 h-12 rounded-lg flex items-center justify-center -translate-y-0.5">
-                        <BicepsFlexed className="h-7 w-7 text-primary" />
+                    <span
+                        className="bg-primary/20 w-12 h-12 rounded-lg flex items-center justify-center -translate-y-0.5">
+                        <BicepsFlexed className="h-7 w-7 text-primary"/>
                     </span>About IronForge
                 </p>
 
@@ -38,10 +46,16 @@ export default function MainPage() {
 
             <div
                 className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen max-w-none overflow-x-hidden
-                [&>*]:mx-0 [&>*]:px-0 [&>*]:mt-0 [&>*]:mb-0"
+                [&>*]:mx-0 [&>*]:px-0 [&>*]:mt-0 [&>*]:mb-0 pb-0"
             >
                 <FeaturesSection/>
-                <CTASection/>
+
+                {isAuthenticated ? (
+                    []
+                ) : (
+                    <CTASection/>
+                )
+                }
             </div>
         </>
     )
