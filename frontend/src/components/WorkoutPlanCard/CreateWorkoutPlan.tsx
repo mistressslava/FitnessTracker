@@ -67,9 +67,11 @@ export default function CreateWorkoutPlan() {
         axios.post("/api/workout-plans", planDto)
             .then(() => {
                 alert("✅ Your workout plan was successfully saved! ✅");
+                nav("/plans");
             })
             .catch(e => {
                 console.error(e);
+                alert("Your workout plan WAS NOT saved!");
                 setSubmitError(e?.response?.data ?? "The plan could not to be saved")
             })
     }
@@ -124,7 +126,6 @@ export default function CreateWorkoutPlan() {
                                 className="w-90 rounded-xl border px-4 py-2 disabled:opacity-50"
                                 onClick={() => {
                                     createPlan();
-                                    nav("/plans")
                                 }}
                                 disabled={!isComplete || !title.trim()}
                             >

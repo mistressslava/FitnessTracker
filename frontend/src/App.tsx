@@ -59,8 +59,8 @@ function App() {
                         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
                             <div className="text-center space-y-6">
                                 <Routes>
-                                    <Route path={"/"} element={<MainPage/>}/>
-                                    <Route path={"/login"} element={<LoginPage/>}/>
+                                    <Route path={"/"} element={<MainPage user={user}/>}/>
+                                    <Route path={"/login"} element={<LoginPage user={user}/>}/>
                                     <Route element={<ProtectedRoute user={user}/>}>
                                         <Route path={"/exercises"} element={<ExerciseList/>}/>
                                         <Route path={"/workouts"} element={<WorkoutDaysPage/>}/>

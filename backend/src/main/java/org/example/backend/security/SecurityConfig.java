@@ -36,9 +36,9 @@ public class SecurityConfig {
                 //.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/assets/**", "/static/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/oauth2/**", "/oauth2/authorization/**").permitAll()
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/login", "/register").anonymous()
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**", "/oauth2/authorization/**").anonymous()
+                        .requestMatchers("/api/auth/login", "/api/auth/register").anonymous()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
@@ -46,6 +46,14 @@ public class SecurityConfig {
                         e.authenticationEntryPoint(new HttpStatusEntryPoint(
                                 HttpStatus.UNAUTHORIZED
                         ))
+                                .accessDeniedHandler((request, response, ex) -> {
+                                    String uri = request.getRequestURI();
+                                    if ("/login".equals(uri) || "/register".equals(uri)) {
+                                        response.sendRedirect(appURL + "/");
+                                    } else {
+                                        response.sendError(HttpStatus.FORBIDDEN.value());
+                                    }
+                                })
                 )
                 .oauth2Login(o -> o
                         .successHandler(successHandler)
